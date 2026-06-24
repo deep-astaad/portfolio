@@ -20,6 +20,7 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [lastMailtoUrl, setLastMailtoUrl] = useState("");
 
   // Local persistent messages storage (Developer Inbox)
   const [messages, setMessages] = useState<ContactMessage[]>([]);
@@ -91,9 +92,24 @@ export default function Contact() {
         console.error("Failed to save contact message:", e);
       }
 
+      // Generate mailto link
+      const recipient = PERSONAL_INFO.email;
+      const emailSubject = `Inquiry from ${name.trim()}: ${subject.trim()}`;
+      const emailBody = `Hello Aman,\n\nYou have received a new inquiry from your portfolio website.\n\nSender Name: ${name.trim()}\nSender Email: ${email.trim()}\n\nMessage:\n${message.trim()}\n\nBest regards,\n${name.trim()}`;
+      
+      const mailtoUrl = `mailto:${recipient}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+      setLastMailtoUrl(mailtoUrl);
+
       setIsSubmitting(false);
       setIsSuccess(true);
       
+      // Attempt automatic redirect to system email client
+      try {
+        window.location.href = mailtoUrl;
+      } catch (err) {
+        console.warn("Auto redirect to mailto blocked or failed", err);
+      }
+
       // Clear fields
       setName("");
       setEmail("");
@@ -172,25 +188,37 @@ export default function Contact() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white border border-gray-200 p-8 text-center space-y-6 flex flex-col items-center justify-center min-h-[350px]"
+                className="bg-white border border-black p-8 text-center space-y-6 flex flex-col items-center justify-center min-h-[350px]"
                 id="contact-success-card"
               >
                 <div className="flex h-12 w-12 items-center justify-center bg-black text-white">
                   <CheckCircle size={24} className="stroke-[2.5]" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="font-display font-bold text-base uppercase tracking-wider text-black">Message Received</h3>
+                  <h3 className="font-display font-bold text-base uppercase tracking-wider text-black">Inquiry Logged & Mail Drafted</h3>
                   <p className="font-sans text-xs text-gray-500 max-w-sm mx-auto leading-relaxed">
-                    Thank you! Your submission has been captured securely. It is stored in the local storage database and can be reviewed in the Inbox panel below.
+                    Thank you! We've captured your submission securely in the local log below, and triggered a draft composer with your native email client to send to <strong>{PERSONAL_INFO.email}</strong>.
+                  </p>
+                  <p className="font-sans text-[10px] text-gray-400 max-w-xs mx-auto leading-normal">
+                    If your email client didn't open automatically, please click the button below to complete transmission:
                   </p>
                 </div>
-                <button
-                  onClick={handleResetSuccess}
-                  id="success-send-another"
-                  className="border border-black bg-black px-5 py-2.5 font-sans text-xs font-bold uppercase tracking-wider text-white hover:bg-white hover:text-black hover:border-black transition-colors duration-150"
-                >
-                  Send Another Message
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
+                  <a
+                    href={lastMailtoUrl}
+                    className="inline-flex items-center justify-center space-x-2 border border-black bg-black px-5 py-2.5 font-sans text-xs font-bold uppercase tracking-wider text-white hover:bg-white hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
+                  >
+                    <Mail size={12} />
+                    <span>Send via Direct Email</span>
+                  </a>
+                  <button
+                    onClick={handleResetSuccess}
+                    id="success-send-another"
+                    className="border border-gray-300 bg-white px-5 py-2.5 font-sans text-xs font-bold uppercase tracking-wider text-gray-700 hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
+                  >
+                    Send Another
+                  </button>
+                </div>
               </motion.div>
             ) : (
               <motion.form
