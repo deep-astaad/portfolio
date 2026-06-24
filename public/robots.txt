@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://deep-astaad.github.io/portfolio/sitemap.xml
