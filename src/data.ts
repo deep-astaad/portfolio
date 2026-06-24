@@ -5,7 +5,6 @@
 
 import React from "react";
 import { Project, Experience, Certification, BlogPost } from "./types";
-import profileUrl from "./profile.png";
 
 export const PERSONAL_INFO = {
   name: "Aman Deep Singh",
@@ -17,7 +16,7 @@ export const PERSONAL_INFO = {
   github: "https://github.com/deep-astaad",
   summary:
     "Backend & Cloud Engineer with 2+ years of experience designing, operating, and scaling production systems. Proven track record of translating business requirements into system architecture, building 24/7 event-driven platforms, and improving reliability through self-healing monitoring infrastructure. Skilled in Python, Go, Docker, AWS, and IaC workflows.",
-  avatar: profileUrl
+  avatar: "profile.png"
 };
 
 export const CERTIFICATIONS: Certification[] = [
@@ -180,7 +179,7 @@ export const BLOG_POSTS: BlogPost[] = [
     tags: ["AWS", "ECS Fargate", "Python", "Celery", "Distributed Systems"],
     author: {
       name: "Aman Deep Singh",
-      avatar: profileUrl
+      avatar: "profile.png"
     },
     views: 412,
     likes: 89,
@@ -241,7 +240,7 @@ export const BLOG_POSTS: BlogPost[] = [
     tags: ["PostgreSQL", "Django", "Redis", "Database Tuning", "Performance"],
     author: {
       name: "Aman Deep Singh",
-      avatar: profileUrl
+      avatar: "profile.png"
     },
     views: 318,
     likes: 72,
@@ -304,7 +303,7 @@ tasks = Task.objects.filter(status='active').select_related('user__profile')`
     tags: ["Algorithms", "Competitive Programming", "Codeforces", "LeetCode", "Problem Solving"],
     author: {
       name: "Aman Deep Singh",
-      avatar: profileUrl
+      avatar: "profile.png"
     },
     views: 524,
     likes: 120,

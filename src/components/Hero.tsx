@@ -8,7 +8,6 @@ import { Github, Linkedin, Mail, MapPin, Award, FileText, ExternalLink, ChevronR
 import { motion, AnimatePresence } from "motion/react";
 import { PERSONAL_INFO, CERTIFICATIONS, SKILL_CATEGORIES } from "../data";
 import Avatar from "./Avatar";
-import resumePdf from "../resume.pdf";
 
 interface HeroProps {
   setActiveTab: (tab: "home" | "blog" | "contact") => void;
@@ -170,7 +169,7 @@ export default function Hero({ setActiveTab }: HeroProps) {
                     />
                     <div className="absolute left-0 mt-2 w-48 bg-white border border-black shadow-lg z-20 font-sans">
                       <a
-                        href={resumePdf}
+                        href="resume.pdf"
                         target="_blank"
                         rel="noreferrer"
                         onClick={() => setShowPdfDropdown(false)}
@@ -180,7 +179,7 @@ export default function Hero({ setActiveTab }: HeroProps) {
                         <span>View PDF in Browser</span>
                       </a>
                       <a
-                        href={resumePdf}
+                        href="resume.pdf"
                         download="Aman_Deep_Singh_Resume.pdf"
                         onClick={() => setShowPdfDropdown(false)}
                         className="flex items-center space-x-2 px-4 py-3 text-xs text-black hover:bg-gray-100 transition-colors"
@@ -335,7 +334,7 @@ export default function Hero({ setActiveTab }: HeroProps) {
                     </span>
                   )}
                   <a 
-                    href={resumePdf}
+                    href="resume.pdf"
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center space-x-1 px-2.5 py-1.5 border border-gray-300 bg-white text-[10px] uppercase tracking-wider font-bold text-gray-700 hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
@@ -344,7 +343,7 @@ export default function Hero({ setActiveTab }: HeroProps) {
                     <span>View Original PDF</span>
                   </a>
                   <a 
-                    href={resumePdf}
+                    href="resume.pdf"
                     download="Aman_Deep_Singh_Resume.pdf"
                     className="inline-flex items-center space-x-1 px-2.5 py-1.5 border border-gray-300 bg-white text-[10px] uppercase tracking-wider font-bold text-gray-700 hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
                   >
