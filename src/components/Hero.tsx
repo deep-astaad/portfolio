@@ -6,7 +6,7 @@
 import React, { useState } from "react";
 import { Github, Linkedin, Mail, MapPin, Award, FileText, ExternalLink, ChevronRight, CheckCircle, Code, Trophy } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { PERSONAL_INFO, CERTIFICATIONS } from "../data";
+import { PERSONAL_INFO, CERTIFICATIONS, SKILL_CATEGORIES } from "../data";
 import Avatar from "./Avatar";
 
 interface HeroProps {
@@ -176,7 +176,7 @@ export default function Hero({ setActiveTab }: HeroProps) {
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                   <div className="flex items-center space-x-2">
                     <Award className="text-black" size={16} />
-                    <span className="font-display font-bold text-xs uppercase tracking-wider text-black">AWS Certifications</span>
+                    <span className="font-display font-bold text-xs uppercase tracking-wider text-black">Certifications & Courses</span>
                   </div>
                   <span className="font-mono text-[9px] text-gray-400 uppercase tracking-wider">Verified</span>
                 </div>
@@ -195,7 +195,11 @@ export default function Hero({ setActiveTab }: HeroProps) {
                         <h4 className="font-sans text-xs font-bold text-gray-800 group-hover:text-black transition-colors">
                           {cert.title}
                         </h4>
-                        <p className="font-mono text-[9px] uppercase text-gray-400">{cert.dateRange}</p>
+                        <div className="flex flex-wrap items-center gap-x-1.5 text-[9px] font-mono uppercase text-gray-400">
+                          <span>{cert.issuer}</span>
+                          <span>•</span>
+                          <span>{cert.dateRange}</span>
+                        </div>
                       </div>
                       <ExternalLink size={12} className="text-gray-400 group-hover:text-black shrink-0 mt-1" />
                     </a>
@@ -271,14 +275,30 @@ export default function Hero({ setActiveTab }: HeroProps) {
               className="relative w-full max-w-4xl h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden cursor-default"
             >
               {/* Modal Header */}
-              <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+              <div className="px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-50 gap-2">
                 <div className="flex items-center space-x-2">
                   <FileText className="text-black" size={16} />
                   <span className="font-display font-bold text-xs uppercase tracking-wider text-black">Aman_Deep_Singh_Resume.pdf</span>
+                  {typeof window !== "undefined" && window.self !== window.top && (
+                    <span className="hidden md:inline-flex items-center bg-amber-50 text-amber-800 text-[9px] font-mono px-2 py-0.5 border border-amber-200 uppercase font-bold animate-pulse">
+                      💡 Tip: Open in a new tab to Print/Export perfectly
+                    </span>
+                  )}
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 justify-end">
+                  {typeof window !== "undefined" && window.self !== window.top && (
+                    <span className="inline-block md:hidden text-[8px] font-mono text-amber-800 text-right mr-1">
+                      💡 Open in new tab to print
+                    </span>
+                  )}
                   <button 
-                    onClick={() => window.print()}
+                    onClick={() => {
+                      try {
+                        window.print();
+                      } catch (e) {
+                        console.error("Print failed", e);
+                      }
+                    }}
                     className="px-3 py-1.5 border border-black bg-white text-[10px] uppercase tracking-wider font-bold text-black hover:bg-black hover:text-white transition-colors duration-150 cursor-pointer"
                   >
                     Print / Export PDF
@@ -351,55 +371,51 @@ export default function Hero({ setActiveTab }: HeroProps) {
                       <li>Built custom telemetry collectors and log streams to proactively identify performance anomalies across distributed environment clusters.</li>
                     </ul>
                   </div>
-                </div>
 
-                {/* Certifications */}
-                <div className="mt-6 space-y-2">
-                  <h3 className="font-display text-sm font-bold tracking-wider text-gray-900 uppercase border-b border-gray-200 pb-1">Certifications</h3>
-                  <ul className="list-disc pl-5 text-xs text-gray-700 space-y-1.5">
-                    <li>
-                      <span>AWS Certified Solutions Architect – Associate (Oct 2025 – Oct 2028) — </span>
-                      <a href="https://www.credly.com/badges/3600e50d-6d46-48f3-a572-1589c71d1856/public_url" target="_blank" rel="noreferrer" className="text-black font-semibold underline hover:text-gray-600">Verify Link</a>
-                    </li>
-                    <li>
-                      <span>AWS Certified CloudOps Engineer – Associate (May 2026 – May 2029) — </span>
-                      <a href="https://www.credly.com/badges/7eab8dcc-7cae-49c5-80a9-67ab01026db4/public_url" target="_blank" rel="noreferrer" className="text-black font-semibold underline hover:text-gray-600">Verify Link</a>
-                    </li>
-                  </ul>
-                </div>
+                  {/* Certifications */}
+                  <div className="mt-6 space-y-2">
+                    <h3 className="font-display text-sm font-bold tracking-wider text-gray-900 uppercase border-b border-gray-200 pb-1">Certifications & Courses</h3>
+                    <ul className="list-disc pl-5 text-xs text-gray-700 space-y-1.5">
+                      {CERTIFICATIONS.map((cert) => (
+                        <li key={cert.id}>
+                          <span>{cert.title} ({cert.issuer} • {cert.dateRange}) — </span>
+                          <a href={cert.credentialUrl} target="_blank" rel="noreferrer" className="text-black font-semibold underline hover:text-gray-600">Verify Link</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-                {/* Education */}
-                <div className="mt-6 space-y-2">
-                  <h3 className="font-display text-sm font-bold tracking-wider text-gray-900 uppercase border-b border-gray-200 pb-1">Education</h3>
-                  <div className="flex justify-between items-start text-xs text-gray-700">
-                    <div>
-                      <span className="font-bold text-black">Indian Institute of Information Technology, Nagpur</span>
-                      <p className="italic">Bachelor of Technology in Computer Science and Engineering</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-semibold text-gray-600">2020 – 2024</span>
-                      <p className="font-bold uppercase tracking-wider text-black">CGPA: 8.41 / 10.0</p>
+                  {/* Education */}
+                  <div className="mt-6 space-y-2">
+                    <h3 className="font-display text-sm font-bold tracking-wider text-gray-900 uppercase border-b border-gray-200 pb-1">Education</h3>
+                    <div className="flex justify-between items-start text-xs text-gray-700">
+                      <div>
+                        <span className="font-bold text-black">Indian Institute of Information Technology, Nagpur</span>
+                        <p className="italic">Bachelor of Technology in Computer Science and Engineering</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-semibold text-gray-600">2020 – 2024</span>
+                        <p className="font-bold uppercase tracking-wider text-black">CGPA: 8.41 / 10.0</p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Skills Section */}
-                <div className="mt-6 space-y-2">
-                  <h3 className="font-display text-sm font-bold tracking-wider text-gray-900 uppercase border-b border-gray-200 pb-1">Skills Inventory</h3>
-                  <div className="grid grid-cols-2 gap-4 text-xs text-gray-700 leading-relaxed">
-                    <div>
-                      <p><strong className="text-gray-900">Languages:</strong> Python, Go (actively learning), C/C++, SQL, JavaScript</p>
-                      <p><strong className="text-gray-900">Frameworks:</strong> Django, Django REST, FastAPI, Scrapy, Celery</p>
-                      <p><strong className="text-gray-900">Databases:</strong> PostgreSQL, MySQL, RDS/Aurora, Redis</p>
+                  {/* Skills Section */}
+                  <div className="mt-6 space-y-2">
+                    <h3 className="font-display text-sm font-bold tracking-wider text-gray-900 uppercase border-b border-gray-200 pb-1">Skills Inventory</h3>
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs text-gray-700 leading-relaxed">
+                      {SKILL_CATEGORIES.map((cat) => (
+                        <div key={cat.title}>
+                          <p>
+                            <strong className="text-gray-900">{cat.title}:</strong>{" "}
+                            {cat.skills.join(", ")}
+                          </p>
+                        </div>
+                      ))}
                     </div>
-                    <div>
-                      <p><strong className="text-gray-900">Cloud & DevOps:</strong> AWS, Terraform, GitHub Actions, CI/CD</p>
-                      <p><strong className="text-gray-900">Infrastructure:</strong> Containerization (Docker), Autoscaling, Monitoring & Alerting</p>
-                      <p><strong className="text-gray-900">Concepts:</strong> Distributed Systems, Event-Driven, Microservices, System Design</p>
+                    <div className="mt-2 text-xs text-gray-700 leading-relaxed border-t border-gray-100 pt-2">
+                      <p><strong className="text-gray-900">Soft Skills:</strong> Engineering Mentorship, Technical Leadership, Systems Thinking, Root-Cause Analysis, Cross-functional Collaboration, High-Pressure Operations</p>
                     </div>
-                  </div>
-                  <div className="mt-2 text-xs text-gray-700 leading-relaxed border-t border-gray-100 pt-2">
-                    <p><strong className="text-gray-900">Soft Skills:</strong> Engineering Mentorship, Technical Leadership, Systems Thinking, Root-Cause Analysis, Cross-functional Collaboration, High-Pressure Operations</p>
                   </div>
                 </div>
 

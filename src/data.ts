@@ -33,6 +33,13 @@ export const CERTIFICATIONS: Certification[] = [
     issuer: "Amazon Web Services (AWS)",
     dateRange: "May 2026 – May 2029",
     credentialUrl: "https://www.credly.com/badges/7eab8dcc-7cae-49c5-80a9-67ab01026db4/public_url"
+  },
+  {
+    id: "coursera-ml",
+    title: "Supervised Machine Learning: Regression and Classification",
+    issuer: "Coursera / Stanford University / DeepLearning.AI",
+    dateRange: "June 2026",
+    credentialUrl: "https://www.coursera.org/account/accomplishments/verify/3KHETA8P5E5B"
   }
 ];
 
@@ -88,6 +95,10 @@ export const SKILL_CATEGORIES = [
   {
     title: "Databases",
     skills: ["PostgreSQL", "MySQL", "RDS/Aurora", "Redis"]
+  },
+  {
+    title: "AI Assisted Development",
+    skills: ["Claude Code", "Codex", "Antigravity", "OpenCode"]
   }
 ];
 

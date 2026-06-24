@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import { Code, Database, Cloud, Settings, Layers, Sliders } from "lucide-react";
+import { Code, Database, Cloud, Settings, Layers, Sliders, Cpu } from "lucide-react";
 import { motion } from "motion/react";
 import { SKILL_CATEGORIES } from "../data";
 
@@ -24,6 +24,8 @@ export default function Skills() {
         return <Sliders className="text-black" size={16} />;
       case "Databases":
         return <Database className="text-black" size={16} />;
+      case "AI Assisted Development":
+        return <Cpu className="text-black" size={16} />;
       default:
         return <Code className="text-black" size={16} />;
     }
