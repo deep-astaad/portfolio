@@ -4,10 +4,11 @@
  */
 
 import React, { useState } from "react";
-import { Github, Linkedin, Mail, MapPin, Award, FileText, ExternalLink, ChevronRight, CheckCircle, Code, Trophy } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, Award, FileText, ExternalLink, ChevronRight, CheckCircle, Code, Trophy, Eye, Download } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { PERSONAL_INFO, CERTIFICATIONS, SKILL_CATEGORIES } from "../data";
 import Avatar from "./Avatar";
+import resumePdf from "../resume.pdf";
 
 interface HeroProps {
   setActiveTab: (tab: "home" | "blog" | "contact") => void;
@@ -15,6 +16,7 @@ interface HeroProps {
 
 export default function Hero({ setActiveTab }: HeroProps) {
   const [showResume, setShowResume] = useState(false);
+  const [showPdfDropdown, setShowPdfDropdown] = useState(false);
 
   return (
     <section className="relative overflow-hidden py-16 lg:py-24" id="hero-section">
@@ -149,6 +151,47 @@ export default function Hero({ setActiveTab }: HeroProps) {
                 <FileText size={14} className="text-gray-500" />
                 <span>Interactive CV</span>
               </button>
+
+              <div className="relative inline-block text-left" id="pdf-resume-dropdown-container">
+                <button
+                  onClick={() => setShowPdfDropdown(!showPdfDropdown)}
+                  id="cta-pdf-resume"
+                  className="inline-flex items-center justify-center space-x-2 border border-black bg-white px-6 py-3 font-sans text-xs font-semibold uppercase tracking-wider text-black transition-all hover:bg-black hover:text-white group duration-200"
+                >
+                  <FileText size={14} className="text-gray-500 group-hover:text-white" />
+                  <span>PDF Resume</span>
+                  <span className="text-[8px] text-gray-500 group-hover:text-white transition-colors">▼</span>
+                </button>
+                {showPdfDropdown && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setShowPdfDropdown(false)}
+                    />
+                    <div className="absolute left-0 mt-2 w-48 bg-white border border-black shadow-lg z-20 font-sans">
+                      <a
+                        href={resumePdf}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => setShowPdfDropdown(false)}
+                        className="flex items-center space-x-2 px-4 py-3 text-xs text-black hover:bg-gray-100 transition-colors border-b border-gray-100"
+                      >
+                        <Eye size={14} className="text-gray-500" />
+                        <span>View PDF in Browser</span>
+                      </a>
+                      <a
+                        href={resumePdf}
+                        download="Aman_Deep_Singh_Resume.pdf"
+                        onClick={() => setShowPdfDropdown(false)}
+                        className="flex items-center space-x-2 px-4 py-3 text-xs text-black hover:bg-gray-100 transition-colors"
+                      >
+                        <Download size={14} className="text-gray-500" />
+                        <span>Download PDF File</span>
+                      </a>
+                    </div>
+                  </>
+                )}
+              </div>
 
               <button
                 onClick={() => setActiveTab("blog")}
@@ -285,12 +328,29 @@ export default function Hero({ setActiveTab }: HeroProps) {
                     </span>
                   )}
                 </div>
-                <div className="flex items-center space-x-2 justify-end">
+                <div className="flex items-center space-x-2 justify-end flex-wrap gap-y-1.5">
                   {typeof window !== "undefined" && window.self !== window.top && (
                     <span className="inline-block md:hidden text-[8px] font-mono text-amber-800 text-right mr-1">
                       💡 Open in new tab to print
                     </span>
                   )}
+                  <a 
+                    href={resumePdf}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center space-x-1 px-2.5 py-1.5 border border-gray-300 bg-white text-[10px] uppercase tracking-wider font-bold text-gray-700 hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
+                  >
+                    <Eye size={12} className="text-gray-500" />
+                    <span>View Original PDF</span>
+                  </a>
+                  <a 
+                    href={resumePdf}
+                    download="Aman_Deep_Singh_Resume.pdf"
+                    className="inline-flex items-center space-x-1 px-2.5 py-1.5 border border-gray-300 bg-white text-[10px] uppercase tracking-wider font-bold text-gray-700 hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
+                  >
+                    <Download size={12} className="text-gray-500" />
+                    <span>Download PDF</span>
+                  </a>
                   <button 
                     onClick={() => {
                       try {
@@ -299,13 +359,13 @@ export default function Hero({ setActiveTab }: HeroProps) {
                         console.error("Print failed", e);
                       }
                     }}
-                    className="px-3 py-1.5 border border-black bg-white text-[10px] uppercase tracking-wider font-bold text-black hover:bg-black hover:text-white transition-colors duration-150 cursor-pointer"
+                    className="inline-flex items-center space-x-1 px-2.5 py-1.5 border border-black bg-white text-[10px] uppercase tracking-wider font-bold text-black hover:bg-black hover:text-white transition-colors duration-150 cursor-pointer"
                   >
-                    Print / Export PDF
+                    <span>Print / Export</span>
                   </button>
                   <button 
                     onClick={() => setShowResume(false)}
-                    className="px-3 py-1.5 border border-transparent text-[10px] uppercase tracking-wider font-bold text-gray-500 hover:text-black transition-colors cursor-pointer"
+                    className="px-2.5 py-1.5 border border-transparent text-[10px] uppercase tracking-wider font-bold text-gray-500 hover:text-black transition-colors cursor-pointer"
                   >
                     Close
                   </button>
