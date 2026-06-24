@@ -2,7 +2,7 @@
 
 Welcome to my personal portfolio and interactive CV! This is a highly polished, desktop-optimized, responsive web application designed with standard modern React, Tailwind CSS, and Framer Motion. It acts as both a developer showcase and a print-optimized digital resume.
 
-🚀 **Live Preview:** [https://deep-astaad.github.io/](https://deep-astaad.github.io/) *(or your configured GitHub Pages URL)*
+🚀 **Live Preview:** [https://deep-astaad.github.io/portfolio/](https://deep-astaad.github.io/portfolio/) *(or your configured GitHub Pages URL)*
 
 ---
 
