@@ -5,6 +5,7 @@
 
 import React from "react";
 import { Project, Experience, Certification, BlogPost } from "./types";
+import profileUrl from "./profile.png";
 
 export const PERSONAL_INFO = {
   name: "Aman Deep Singh",
@@ -16,7 +17,7 @@ export const PERSONAL_INFO = {
   github: "https://github.com/deep-astaad",
   summary:
     "Backend & Cloud Engineer with 2+ years of experience designing, operating, and scaling production systems. Proven track record of translating business requirements into system architecture, building 24/7 event-driven platforms, and improving reliability through self-healing monitoring infrastructure. Skilled in Python, Go, Docker, AWS, and IaC workflows.",
-  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" // Wait, let's use a nice professional placeholder vector or stylized icon if we prefer, or a clean abstract profile placeholder!
+  avatar: profileUrl
 };
 
 export const CERTIFICATIONS: Certification[] = [
@@ -49,7 +50,7 @@ export const EXPERIENCES: Experience[] = [
     company: "SMS DataTech Corporation",
     role: "Software Engineer",
     location: "Tokyo, Japan",
-    duration: "July 2023 – Present",
+    duration: "Oct 2024 – Present",
     highlights: [
       "Designed and architected a distributed, 24/7 web scraping platform from scratch on AWS ECS/Fargate, managing 1,000+ concurrent extraction requests with dynamic autoscaling policies.",
       "Owned the end-to-end backend architecture for 'TANOMEE' (internal work-sharing platform used by 700+ employees), designing REST APIs and optimizing DB queries to reduce latency by 45%.",
@@ -63,7 +64,7 @@ export const EXPERIENCES: Experience[] = [
     company: "SMS DataTech Corporation",
     role: "Software Engineer Intern",
     location: "Tokyo, Japan",
-    duration: "Jan 2023 – June 2023",
+    duration: "July 2023 – Sept 2024",
     highlights: [
       "Designed a self-healing log aggregation and real-time monitoring system for SMS DataTech's core platforms and 'Pogo', reducing Mean Time to Detection (MTTD) by 70% and Mean Time to Resolution (MTTR) by 50% for 24/7 operations.",
       "Built custom telemetry collectors and log streams to proactively identify performance anomalies across distributed test and staging environments."
@@ -179,7 +180,7 @@ export const BLOG_POSTS: BlogPost[] = [
     tags: ["AWS", "ECS Fargate", "Python", "Celery", "Distributed Systems"],
     author: {
       name: "Aman Deep Singh",
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=64&auto=format&fit=crop"
+      avatar: profileUrl
     },
     views: 412,
     likes: 89,
@@ -240,7 +241,7 @@ export const BLOG_POSTS: BlogPost[] = [
     tags: ["PostgreSQL", "Django", "Redis", "Database Tuning", "Performance"],
     author: {
       name: "Aman Deep Singh",
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=64&auto=format&fit=crop"
+      avatar: profileUrl
     },
     views: 318,
     likes: 72,
@@ -303,7 +304,7 @@ tasks = Task.objects.filter(status='active').select_related('user__profile')`
     tags: ["Algorithms", "Competitive Programming", "Codeforces", "LeetCode", "Problem Solving"],
     author: {
       name: "Aman Deep Singh",
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=64&auto=format&fit=crop"
+      avatar: profileUrl
     },
     views: 524,
     likes: 120,

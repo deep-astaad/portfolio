@@ -346,7 +346,7 @@ export default function Hero({ setActiveTab }: HeroProps) {
                         <span className="font-bold text-black">SMS DataTech Corporation</span>
                         <span className="ml-2 px-1.5 py-0.2 bg-black text-white text-[9px] font-bold">Software Engineer (Full-Time)</span>
                       </div>
-                      <span className="font-semibold text-gray-600 text-[10px]">July 2023 – Present  |  Tokyo, Japan</span>
+                      <span className="font-semibold text-gray-600 text-[10px]">Oct 2024 – Present  |  Tokyo, Japan</span>
                     </div>
                     <ul className="list-disc pl-5 text-xs text-gray-700 space-y-1.5 leading-relaxed">
                       <li>Designed and architected a distributed, 24/7 web scraping platform from scratch on AWS ECS/Fargate; translated product requirements into system design covering autoscaling, fault tolerance, and event-driven processing for 1,000+ concurrent extraction requests.</li>
@@ -364,7 +364,7 @@ export default function Hero({ setActiveTab }: HeroProps) {
                         <span className="font-bold text-black">SMS DataTech Corporation</span>
                         <span className="ml-2 px-1.5 py-0.2 bg-gray-500 text-white text-[9px] font-bold">Software Engineer Intern</span>
                       </div>
-                      <span className="font-semibold text-gray-600 text-[10px]">Jan 2023 – June 2023  |  Tokyo, Japan</span>
+                      <span className="font-semibold text-gray-600 text-[10px]">July 2023 – Sept 2024  |  Tokyo, Japan</span>
                     </div>
                     <ul className="list-disc pl-5 text-xs text-gray-700 space-y-1.5 leading-relaxed">
                       <li>Designed a self-healing log aggregation and real-time monitoring system for SMS DataTech's core platforms and 'Pogo', reducing Mean Time to Detection (MTTD) by 70% and Mean Time to Resolution (MTTR) by 50% for 24/7 operations.</li>
