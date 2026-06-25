@@ -15,7 +15,6 @@ interface HeroProps {
 
 export default function Hero({ setActiveTab }: HeroProps) {
   const [showResume, setShowResume] = useState(false);
-  const [showPdfDropdown, setShowPdfDropdown] = useState(false);
 
   return (
     <section className="relative overflow-hidden py-16 lg:py-24" id="hero-section">
@@ -69,22 +68,11 @@ export default function Hero({ setActiveTab }: HeroProps) {
               </motion.h2>
             </div>
 
-            {/* Structured Summary */}
-            <motion.p 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="font-sans text-base leading-relaxed text-gray-600 max-w-2xl"
-              id="hero-summary"
-            >
-              {PERSONAL_INFO.summary} Specifically, I design distributed cloud-native scraping architectures, optimize SQL and backend REST APIs (reducing latency by up to 45%), and scale robust task executors.
-            </motion.p>
-
-            {/* Social Links & Meta Info */}
+            {/* Social Links & Meta Info (Moved right below title text) */}
             <motion.div 
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
               className="flex flex-wrap items-center gap-4 py-2"
               id="social-icons-row"
             >
@@ -122,11 +110,11 @@ export default function Hero({ setActiveTab }: HeroProps) {
               </div>
             </motion.div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons (Moved right after the moved links) */}
             <motion.div 
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
               className="flex flex-wrap gap-4 pt-2"
               id="hero-cta-buttons"
             >
@@ -151,56 +139,27 @@ export default function Hero({ setActiveTab }: HeroProps) {
                 <span>Interactive CV</span>
               </button>
 
-              <div className="relative inline-block text-left" id="pdf-resume-dropdown-container">
-                <button
-                  onClick={() => setShowPdfDropdown(!showPdfDropdown)}
-                  id="cta-pdf-resume"
-                  className="inline-flex items-center justify-center space-x-2 border border-black bg-white px-6 py-3 font-sans text-xs font-semibold uppercase tracking-wider text-black transition-all hover:bg-black hover:text-white group duration-200"
-                >
-                  <FileText size={14} className="text-gray-500 group-hover:text-white" />
-                  <span>PDF Resume</span>
-                  <span className="text-[8px] text-gray-500 group-hover:text-white transition-colors">▼</span>
-                </button>
-                {showPdfDropdown && (
-                  <>
-                    <div 
-                      className="fixed inset-0 z-10" 
-                      onClick={() => setShowPdfDropdown(false)}
-                    />
-                    <div className="absolute left-0 mt-2 w-48 bg-white border border-black shadow-lg z-20 font-sans">
-                      <a
-                        href="resume.pdf"
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={() => setShowPdfDropdown(false)}
-                        className="flex items-center space-x-2 px-4 py-3 text-xs text-black hover:bg-gray-100 transition-colors border-b border-gray-100"
-                      >
-                        <Eye size={14} className="text-gray-500" />
-                        <span>View PDF in Browser</span>
-                      </a>
-                      <a
-                        href="resume.pdf"
-                        download="Aman_Deep_Singh_Resume.pdf"
-                        onClick={() => setShowPdfDropdown(false)}
-                        className="flex items-center space-x-2 px-4 py-3 text-xs text-black hover:bg-gray-100 transition-colors"
-                      >
-                        <Download size={14} className="text-gray-500" />
-                        <span>Download PDF File</span>
-                      </a>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <button
-                onClick={() => setActiveTab("blog")}
-                id="cta-read-blog"
-                className="inline-flex items-center justify-center space-x-2 border border-transparent bg-transparent px-4 py-3 font-sans text-xs font-bold uppercase tracking-wider text-black transition-all hover:underline"
+              <a
+                href="resume.pdf"
+                download="Aman_Deep_Singh_Resume.pdf"
+                id="cta-pdf-resume"
+                className="inline-flex items-center justify-center space-x-2 border border-black bg-white px-6 py-3 font-sans text-xs font-semibold uppercase tracking-wider text-black transition-all hover:bg-black hover:text-white group duration-200"
               >
-                <span>Read Technical Blog</span>
-                <span className="font-mono text-[10px] px-1.5 py-0.5 border border-black bg-black text-white">3 Articles</span>
-              </button>
+                <Download size={14} className="text-gray-500 group-hover:text-white transition-colors" />
+                <span>PDF Resume</span>
+              </a>
             </motion.div>
+
+            {/* Structured Summary (Placed after the action buttons, made short and readable) */}
+            <motion.p 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="font-sans text-sm sm:text-base leading-relaxed text-gray-600 max-w-2xl pt-2"
+              id="hero-summary"
+            >
+              {PERSONAL_INFO.summary}
+            </motion.p>
 
           </div>
 
@@ -249,37 +208,6 @@ export default function Hero({ setActiveTab }: HeroProps) {
                 </div>
               </div>
 
-              {/* Competitive Programming Badges */}
-              <div className="grid grid-cols-2 gap-4">
-                
-                {/* Codeforces Badge */}
-                <div className="bg-white border border-gray-200 p-5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Trophy className="text-black" size={16} />
-                    <span className="font-mono text-[8px] text-black font-bold uppercase tracking-widest border border-black bg-white px-1.5 py-0.5">Specialist</span>
-                  </div>
-                  <div>
-                    <p className="font-sans text-2xl font-bold text-black tracking-tight">1455</p>
-                    <p className="font-sans text-[10px] uppercase tracking-wider text-gray-500 font-semibold">Max Rating</p>
-                  </div>
-                  <p className="font-mono text-[9px] text-gray-400">Global Rank 892</p>
-                </div>
-
-                {/* LeetCode Badge */}
-                <div className="bg-white border border-gray-200 p-5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Code className="text-black" size={16} />
-                    <span className="font-mono text-[8px] text-white font-bold uppercase tracking-widest bg-black px-1.5 py-0.5">Expert</span>
-                  </div>
-                  <div>
-                    <p className="font-sans text-2xl font-bold text-black tracking-tight">1000+</p>
-                    <p className="font-sans text-[10px] uppercase tracking-wider text-gray-500 font-semibold">Problems Solved</p>
-                  </div>
-                  <p className="font-mono text-[9px] text-gray-400">Competitive platforms</p>
-                </div>
-
-              </div>
-
               {/* Company MVP Badge */}
               <div className="bg-black text-white p-5 flex items-center justify-between border border-black">
                 <div className="space-y-1">
@@ -317,54 +245,15 @@ export default function Hero({ setActiveTab }: HeroProps) {
               className="relative w-full max-w-4xl h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden cursor-default"
             >
               {/* Modal Header */}
-              <div className="px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-50 gap-2">
+              <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
                 <div className="flex items-center space-x-2">
                   <FileText className="text-black" size={16} />
                   <span className="font-display font-bold text-xs uppercase tracking-wider text-black">Aman_Deep_Singh_Resume.pdf</span>
-                  {typeof window !== "undefined" && window.self !== window.top && (
-                    <span className="hidden md:inline-flex items-center bg-amber-50 text-amber-800 text-[9px] font-mono px-2 py-0.5 border border-amber-200 uppercase font-bold animate-pulse">
-                      💡 Tip: Open in a new tab to Print/Export perfectly
-                    </span>
-                  )}
                 </div>
-                <div className="flex items-center space-x-2 justify-end flex-wrap gap-y-1.5">
-                  {typeof window !== "undefined" && window.self !== window.top && (
-                    <span className="inline-block md:hidden text-[8px] font-mono text-amber-800 text-right mr-1">
-                      💡 Open in new tab to print
-                    </span>
-                  )}
-                  <a 
-                    href="resume.pdf"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center space-x-1 px-2.5 py-1.5 border border-gray-300 bg-white text-[10px] uppercase tracking-wider font-bold text-gray-700 hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
-                  >
-                    <Eye size={12} className="text-gray-500" />
-                    <span>View Original PDF</span>
-                  </a>
-                  <a 
-                    href="resume.pdf"
-                    download="Aman_Deep_Singh_Resume.pdf"
-                    className="inline-flex items-center space-x-1 px-2.5 py-1.5 border border-gray-300 bg-white text-[10px] uppercase tracking-wider font-bold text-gray-700 hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
-                  >
-                    <Download size={12} className="text-gray-500" />
-                    <span>Download PDF</span>
-                  </a>
-                  <button 
-                    onClick={() => {
-                      try {
-                        window.print();
-                      } catch (e) {
-                        console.error("Print failed", e);
-                      }
-                    }}
-                    className="inline-flex items-center space-x-1 px-2.5 py-1.5 border border-black bg-white text-[10px] uppercase tracking-wider font-bold text-black hover:bg-black hover:text-white transition-colors duration-150 cursor-pointer"
-                  >
-                    <span>Print / Export</span>
-                  </button>
+                <div>
                   <button 
                     onClick={() => setShowResume(false)}
-                    className="px-2.5 py-1.5 border border-transparent text-[10px] uppercase tracking-wider font-bold text-gray-500 hover:text-black transition-colors cursor-pointer"
+                    className="px-4 py-2 border border-black bg-white text-[10px] uppercase tracking-wider font-bold text-black hover:bg-black hover:text-white transition-colors duration-150 cursor-pointer"
                   >
                     Close
                   </button>
@@ -483,8 +372,7 @@ export default function Hero({ setActiveTab }: HeroProps) {
                   <h3 className="font-display text-sm font-bold tracking-wider text-gray-900 uppercase border-b border-gray-200 pb-1">Key Achievements</h3>
                   <ul className="list-disc pl-5 text-xs text-gray-700 space-y-1">
                     <li><strong className="text-gray-900">Company-wide MVP Award (Q4 FY2025):</strong> Awarded for outstanding architectural contributions.</li>
-                    <li><strong className="text-gray-900">Competitive Programming Specialist:</strong> Peak rating of 1455 on Codeforces. Ranked Global #892 in Round 856 (Div. 2).</li>
-                    <li><strong className="text-gray-900">LeetCode Accomplishment:</strong> Solved 1000+ total algorithmic problems with deep practice in C++ and Python.</li>
+                    <li><strong className="text-gray-900">Problem Solving Accomplishments:</strong> Extensive practice in algorithms and data structures on competitive platforms with C++ and Python.</li>
                     <li><strong className="text-gray-900">State Merit Rank 10:</strong> Awarded in the Senior Secondary exams by BSER, Rajasthan in 2019 out of hundred-thousands of candidates.</li>
                   </ul>
                 </div>

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from "react";
-import { Menu, X, Terminal, FileText, Mail, Home, BookOpen, Share2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Menu, X, Terminal, FileText, Mail, Home, BookOpen, Share2, Code, Briefcase, Award } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { PERSONAL_INFO } from "../data";
 import Avatar from "./Avatar";
@@ -16,17 +16,80 @@ interface HeaderProps {
 
 export default function Header({ activeTab, setActiveTab }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("home");
 
   const navItems = [
-    { id: "home" as const, label: "Home", icon: Home },
-    { id: "blog" as const, label: "Tech Blog", icon: BookOpen },
-    { id: "contact" as const, label: "Contact", icon: Mail },
+    { id: "home", label: "Home", type: "tab", icon: Home },
+    { id: "skills", label: "Skills", type: "scroll", targetId: "skills-section", icon: Code },
+    { id: "projects", label: "Projects", type: "scroll", targetId: "projects-section", icon: Briefcase },
+    { id: "experience", label: "Experience", type: "scroll", targetId: "experience-section", icon: Award },
+    { id: "blog", label: "Tech Blog", type: "tab", icon: BookOpen },
+    { id: "contact", label: "Contact", type: "tab", icon: Mail },
   ];
 
-  const handleNavClick = (tabId: "home" | "blog" | "contact") => {
-    setActiveTab(tabId);
-    setIsOpen(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  // Section observer to track the active section within the Home tab
+  useEffect(() => {
+    if (activeTab !== "home") return;
+
+    const sections = ["hero-section", "skills-section", "projects-section", "experience-section"];
+    const observers = sections.map((id) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            if (id === "hero-section") {
+              setActiveSection("home");
+            } else if (id === "skills-section") {
+              setActiveSection("skills");
+            } else if (id === "projects-section") {
+              setActiveSection("projects");
+            } else if (id === "experience-section") {
+              setActiveSection("experience");
+            }
+          }
+        },
+        { threshold: 0.15, rootMargin: "-80px 0px -50% 0px" }
+      );
+      observer.observe(el);
+      return { observer, el };
+    });
+
+    return () => {
+      observers.forEach((obs) => {
+        if (obs) obs.observer.unobserve(obs.el);
+      });
+    };
+  }, [activeTab]);
+
+  const handleNavClick = (target: string | { id: string; label: string; type: string; targetId?: string }) => {
+    if (typeof target === "string") {
+      setActiveTab(target as "home" | "blog" | "contact");
+      setIsOpen(false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (target.type === "scroll" && target.targetId) {
+      if (activeTab !== "home") {
+        setActiveTab("home");
+        // Wait for Home tab to render
+        setTimeout(() => {
+          const el = document.getElementById(target.targetId!);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 150);
+      } else {
+        const el = document.getElementById(target.targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+      setIsOpen(false);
+    } else {
+      setActiveTab(target.id as "home" | "blog" | "contact");
+      setIsOpen(false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (
@@ -51,15 +114,17 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-1" id="desktop-nav">
+        <nav className="hidden lg:flex items-center space-x-1" id="desktop-nav">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeTab === item.id;
+            const isActive = item.type === "scroll"
+              ? (activeTab === "home" && activeSection === item.id)
+              : (activeTab === item.id);
             return (
               <button
                 key={item.id}
                 id={`nav-${item.id}`}
-                onClick={() => handleNavClick(item.id)}
+                onClick={() => handleNavClick(item)}
                 className={`relative flex items-center space-x-1.5 px-3.5 py-1.5 font-sans text-xs uppercase tracking-wider font-semibold transition-all duration-200 ${
                   isActive 
                     ? "text-black" 
@@ -93,7 +158,7 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className="flex md:hidden" id="mobile-menu-trigger">
+        <div className="flex lg:hidden" id="mobile-menu-trigger">
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="inline-flex items-center justify-center p-2 text-black hover:bg-gray-100 focus:outline-none"
@@ -112,18 +177,20 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden border-b border-gray-200 bg-white"
+            className="lg:hidden border-b border-gray-200 bg-white"
             id="mobile-drawer"
           >
             <div className="space-y-1 px-4 pt-2 pb-4">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = activeTab === item.id;
+                const isActive = item.type === "scroll"
+                  ? (activeTab === "home" && activeSection === item.id)
+                  : (activeTab === item.id);
                 return (
                   <button
                     key={item.id}
                     id={`mobile-nav-${item.id}`}
-                    onClick={() => handleNavClick(item.id)}
+                    onClick={() => handleNavClick(item)}
                     className={`flex w-full items-center space-x-3 px-4 py-3 font-sans text-sm uppercase tracking-wider font-semibold transition-colors duration-200 ${
                       isActive
                         ? "bg-gray-100 text-black border-l-2 border-black"

@@ -312,7 +312,7 @@ tasks = Task.objects.filter(status='active').select_related('user__profile')`
     coverImage: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=600&auto=format&fit=crop",
     content: React.createElement("div", { className: "space-y-6" },
       React.createElement("p", { className: "text-lg text-gray-700 leading-relaxed font-sans" },
-        "Solving over 1,000 algorithmic problems across platforms like Codeforces (where I'm rated a Specialist with a peak of 1455) and LeetCode has been a cornerstone of my growth as an engineer. While some developers dismiss competitive programming as 'interviews preparation', I have found that it builds core instincts that directly elevate system architecture and backend reliability."
+        "Solving algorithmic problems across platforms like Codeforces and LeetCode has been a cornerstone of my growth as an engineer. While some developers dismiss competitive programming as 'interviews preparation', I have found that it builds core instincts that directly elevate system architecture and backend reliability."
       ),
       React.createElement("h3", { className: "text-2xl font-display font-bold text-gray-900 mt-8 mb-4" },
         "1. Complexity Intuition is a Production Tool"
