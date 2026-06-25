@@ -21,6 +21,23 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<"home" | "blog" | "contact">("home");
   const [showScrollTop, setShowScrollTop] = useState(false);
 
+  // Load deep links (e.g. ?tab=blog or #blog) for search engine crawler discovery
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab");
+      const hash = window.location.hash;
+      
+      if (tabParam === "blog" || hash === "#blog") {
+        setActiveTab("blog");
+      } else if (tabParam === "contact" || hash === "#contact") {
+        setActiveTab("contact");
+      }
+    } catch (e) {
+      console.error("Deep link routing failed:", e);
+    }
+  }, []);
+
   // Dynamic SEO optimized title updates
   useEffect(() => {
     try {
@@ -188,17 +205,6 @@ export default function App() {
                     >
                       <Mail size={14} />
                       <span>Shoot me an Email</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setActiveTab("blog");
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                      }}
-                      id="home-cta-blog-trigger"
-                      className="inline-flex items-center justify-center space-x-2 border border-white bg-transparent px-5 py-3 font-sans text-xs font-bold uppercase tracking-wider text-white hover:bg-white hover:text-black transition-colors duration-150"
-                    >
-                      <BookOpen size={14} />
-                      <span>Browse Tech Log</span>
                     </button>
                   </div>
                 </div>

@@ -23,7 +23,6 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
     { id: "skills", label: "Skills", type: "scroll", targetId: "skills-section", icon: Code },
     { id: "projects", label: "Projects", type: "scroll", targetId: "projects-section", icon: Briefcase },
     { id: "experience", label: "Experience", type: "scroll", targetId: "experience-section", icon: Award },
-    { id: "blog", label: "Tech Blog", type: "tab", icon: BookOpen },
     { id: "contact", label: "Contact", type: "tab", icon: Mail },
   ];
 

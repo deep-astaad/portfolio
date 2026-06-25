@@ -44,13 +44,6 @@ export default function Footer({ setActiveTab }: FooterProps) {
               Home
             </button>
             <button 
-              onClick={() => { setActiveTab("blog"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-              id="footer-nav-blog"
-              className="hover:text-black transition-colors"
-            >
-              Tech Blog
-            </button>
-            <button 
               onClick={() => { setActiveTab("contact"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
               id="footer-nav-contact"
               className="hover:text-black transition-colors"
