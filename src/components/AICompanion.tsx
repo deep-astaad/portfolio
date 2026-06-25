@@ -133,12 +133,16 @@ export default function AICompanion() {
           ? backendUrl.replace("/api/chat", "/api/health")
           : `${backendUrl.replace(/\/$/, "")}/health`;
 
-        const res = await fetch(testUrl, { method: "GET", signal: AbortController.prototype.signal });
+        // Use standard AbortSignal.timeout for safe, modern browser timeout handling
+        const res = await fetch(testUrl, { method: "GET", signal: AbortSignal.timeout(5000) });
         if (res.ok) {
           setIsLiveConnection(true);
+        } else {
+          console.warn(`Health check returned non-OK status: ${res.status}`);
+          setIsLiveConnection(false);
         }
-      } catch (err) {
-        console.log("No live Vercel AI backend detected, falling back to smart on-page demo mode.");
+      } catch (err: any) {
+        console.warn("No live Vercel AI backend detected, falling back to smart on-page demo mode:", err?.message || err);
         setIsLiveConnection(false);
       }
     };
@@ -208,8 +212,15 @@ ${isLiveConnection
         } else {
           throw new Error(`Server returned status: ${response.status}`);
         }
-      } catch (backendErr) {
-        console.warn("Direct Vercel API endpoint failed, falling back to smart demo response:", backendErr);
+      } catch (backendErr: any) {
+        console.error("=== AI COPILOT BACKEND ERROR DIAGNOSTIC ===");
+        console.error("Target URL:", backendUrl);
+        console.error("Error Message:", backendErr?.message || backendErr);
+        console.error("Possible Causes:");
+        console.error("1. CORS Mismatch: Check if 'ALLOWED_ORIGIN' in your Vercel Environment Variables matches your current origin exactly (e.g. 'https://deep-astaad.github.io' without trailing slash).");
+        console.error("2. Browser Shield / Adblocker: Brave Shields or extensions like uBlock Origin might block '/api/chat' endpoints by default. Try disabling shields for the site.");
+        console.error("3. Vercel Cold Start / Timeout: If the serverless function takes >10 seconds to respond, the browser might show a network error.");
+        console.error("==========================================");
         botResponseText = getDemoResponse(textToSend);
       }
 
