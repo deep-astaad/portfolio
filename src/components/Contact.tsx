@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { Mail, Send, CheckCircle, Clock, Trash2, User, Eye, EyeOff, ShieldCheck, Sparkles } from "lucide-react";
+import { Mail, Send, CheckCircle, Clock, Trash2, User, Eye, EyeOff, ShieldCheck, Sparkles, Settings, Sliders, ExternalLink, Download } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { ContactMessage } from "../types";
 import { PERSONAL_INFO } from "../data";
@@ -21,6 +21,19 @@ export default function Contact() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [lastMailtoUrl, setLastMailtoUrl] = useState("");
+
+  // Formspree States
+  const [formspreeId, setFormspreeId] = useState<string>(() => {
+    try {
+      const stored = localStorage.getItem("aman_formspree_id");
+      if (stored) return stored;
+    } catch (e) {
+      console.error("Failed to load local Formspree ID", e);
+    }
+    return (import.meta.env.VITE_FORMSPREE_FORM_ID as string) || "xaqgeykl";
+  });
+  const [showSettings, setShowSettings] = useState(false);
+  const [submissionMethod, setSubmissionMethod] = useState<"formspree" | "mailto" | null>(null);
 
   // Local persistent messages storage (Developer Inbox)
   const [messages, setMessages] = useState<ContactMessage[]>([]);
@@ -42,7 +55,7 @@ export default function Contact() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailStr);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
 
@@ -67,55 +80,90 @@ export default function Contact() {
     // Trigger loading spinner
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      const newMessage: ContactMessage = {
-        id: `msg-${Date.now()}`,
-        name: name.trim(),
-        email: email.trim(),
-        subject: subject.trim(),
-        message: message.trim(),
-        date: new Date().toLocaleDateString("en-US", { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        }),
-        isRead: false
-      };
+    const newMessage: ContactMessage = {
+      id: `msg-${Date.now()}`,
+      name: name.trim(),
+      email: email.trim(),
+      subject: subject.trim(),
+      message: message.trim(),
+      date: new Date().toLocaleDateString("en-US", { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      isRead: false
+    };
 
+    try {
+      const updatedMessages = [newMessage, ...messages];
+      setMessages(updatedMessages);
+      localStorage.setItem("aman_portfolio_messages", JSON.stringify(updatedMessages));
+    } catch (e) {
+      console.error("Failed to save contact message:", e);
+    }
+
+    // Attempt actual Formspree transmission if Formspree Form ID is active
+    if (formspreeId.trim()) {
       try {
-        const updatedMessages = [newMessage, ...messages];
-        setMessages(updatedMessages);
-        localStorage.setItem("aman_portfolio_messages", JSON.stringify(updatedMessages));
-      } catch (e) {
-        console.error("Failed to save contact message:", e);
-      }
+        const response = await fetch(`https://formspree.io/f/${formspreeId.trim()}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            name: name.trim(),
+            email: email.trim(),
+            subject: subject.trim(),
+            message: message.trim()
+          })
+        });
 
-      // Generate mailto link
-      const recipient = PERSONAL_INFO.email;
-      const emailSubject = `Inquiry from ${name.trim()}: ${subject.trim()}`;
-      const emailBody = `Hello Aman,\n\nYou have received a new inquiry from your portfolio website.\n\nSender Name: ${name.trim()}\nSender Email: ${email.trim()}\n\nMessage:\n${message.trim()}\n\nBest regards,\n${name.trim()}`;
-      
-      const mailtoUrl = `mailto:${recipient}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-      setLastMailtoUrl(mailtoUrl);
-
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      
-      // Attempt automatic redirect to system email client
-      try {
-        window.location.href = mailtoUrl;
+        if (response.ok) {
+          setSubmissionMethod("formspree");
+          setIsSubmitting(false);
+          setIsSuccess(true);
+          
+          // Clear fields
+          setName("");
+          setEmail("");
+          setSubject("");
+          setMessage("");
+          return;
+        } else {
+          console.warn("Formspree server rejected the submission. Falling back to native mailto.");
+        }
       } catch (err) {
-        console.warn("Auto redirect to mailto blocked or failed", err);
+        console.error("Formspree fetch failed. Falling back to native mailto.", err);
       }
+    }
 
-      // Clear fields
-      setName("");
-      setEmail("");
-      setSubject("");
-      setMessage("");
-    }, 1200); // Realistic network/API round-trip delay
+    // Fallback: Generate mailto link
+    const recipient = PERSONAL_INFO.email;
+    const emailSubject = `Inquiry from ${name.trim()}: ${subject.trim()}`;
+    const emailBody = `Hello Aman,\n\nYou have received a new inquiry from your portfolio website.\n\nSender Name: ${name.trim()}\nSender Email: ${email.trim()}\n\nMessage:\n${message.trim()}\n\nBest regards,\n${name.trim()}`;
+    
+    const mailtoUrl = `mailto:${recipient}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    setLastMailtoUrl(mailtoUrl);
+    setSubmissionMethod("mailto");
+
+    setIsSubmitting(false);
+    setIsSuccess(true);
+    
+    // Attempt automatic redirect to system email client
+    try {
+      window.location.href = mailtoUrl;
+    } catch (err) {
+      console.warn("Auto redirect to mailto blocked or failed", err);
+    }
+
+    // Clear fields
+    setName("");
+    setEmail("");
+    setSubject("");
+    setMessage("");
   };
 
   const handleDeleteMessage = (msgId: string) => {
@@ -194,23 +242,36 @@ export default function Contact() {
                 <div className="flex h-12 w-12 items-center justify-center bg-black text-white">
                   <CheckCircle size={24} className="stroke-[2.5]" />
                 </div>
-                <div className="space-y-2">
-                  <h3 className="font-display font-bold text-base uppercase tracking-wider text-black">Inquiry Logged & Mail Drafted</h3>
-                  <p className="font-sans text-xs text-gray-500 max-w-sm mx-auto leading-relaxed">
-                    Thank you! We've captured your submission securely in the local log below, and triggered a draft composer with your native email client to send to <strong>{PERSONAL_INFO.email}</strong>.
-                  </p>
-                  <p className="font-sans text-[10px] text-gray-400 max-w-xs mx-auto leading-normal">
-                    If your email client didn't open automatically, please click the button below to complete transmission:
-                  </p>
-                </div>
+                
+                {submissionMethod === "formspree" ? (
+                  <div className="space-y-2">
+                    <h3 className="font-display font-bold text-base uppercase tracking-wider text-black">Inquiry Dispatched Successfully</h3>
+                    <p className="font-sans text-xs text-gray-500 max-w-sm mx-auto leading-relaxed">
+                      Thank you! Your message has been successfully transmitted via Formspree directly to Aman. A local record of this inquiry is also saved in your history logger below.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <h3 className="font-display font-bold text-base uppercase tracking-wider text-black">Inquiry Logged & Mail Drafted</h3>
+                    <p className="font-sans text-xs text-gray-500 max-w-sm mx-auto leading-relaxed">
+                      Thank you! We've captured your submission securely in the local log below, and triggered a draft composer with your native email client to send to <strong>{PERSONAL_INFO.email}</strong>.
+                    </p>
+                    <p className="font-sans text-[10px] text-gray-400 max-w-xs mx-auto leading-normal">
+                      If your email client didn't open automatically, please click the button below to complete transmission:
+                    </p>
+                  </div>
+                )}
+
                 <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
-                  <a
-                    href={lastMailtoUrl}
-                    className="inline-flex items-center justify-center space-x-2 border border-black bg-black px-5 py-2.5 font-sans text-xs font-bold uppercase tracking-wider text-white hover:bg-white hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
-                  >
-                    <Mail size={12} />
-                    <span>Send via Direct Email</span>
-                  </a>
+                  {submissionMethod === "mailto" && (
+                    <a
+                      href={lastMailtoUrl}
+                      className="inline-flex items-center justify-center space-x-2 border border-black bg-black px-5 py-2.5 font-sans text-xs font-bold uppercase tracking-wider text-white hover:bg-white hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
+                    >
+                      <Mail size={12} />
+                      <span>Send via Direct Email</span>
+                    </a>
+                  )}
                   <button
                     onClick={handleResetSuccess}
                     id="success-send-another"
@@ -230,7 +291,81 @@ export default function Contact() {
                 className="bg-white border border-gray-200 p-6 sm:p-8 space-y-5"
                 id="contact-form"
               >
-                <h3 className="font-display font-bold text-xs uppercase tracking-wider text-black">Send an inquiry</h3>
+                <div className="flex items-center justify-between border-b border-gray-100 pb-3" id="formspree-config-header">
+                  <h3 className="font-display font-bold text-xs uppercase tracking-wider text-black">Send an inquiry</h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowSettings(!showSettings)}
+                    className="inline-flex items-center space-x-1.5 font-mono text-[9px] font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors"
+                  >
+                    <Settings size={12} />
+                    <span>Configure Formspree</span>
+                  </button>
+                </div>
+
+                <AnimatePresence>
+                  {showSettings && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="border border-black bg-gray-50 p-4 space-y-3 font-sans text-xs overflow-hidden"
+                      id="formspree-setup-panel"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-black uppercase tracking-wider text-[10px] flex items-center space-x-1">
+                          <Sliders size={12} />
+                          <span>Formspree Setup</span>
+                        </span>
+                        <span className="font-mono text-[8px] bg-black text-white px-1.5 py-0.5 uppercase tracking-widest">Static-Friendly</span>
+                      </div>
+                      
+                      <p className="text-gray-500 leading-normal text-[11px]">
+                        To receive email inquiries in your inbox without running a backend server or exposing your email address on GitHub, you can use <strong>Formspree (Free)</strong>:
+                      </p>
+                      
+                      <ol className="list-decimal list-inside text-gray-500 space-y-1 text-[11px] pl-1">
+                        <li>Go to <a href="https://formspree.io" target="_blank" rel="noreferrer" className="underline hover:text-black inline-flex items-center space-x-0.5"><span>formspree.io</span><ExternalLink size={8} /></a> and sign up.</li>
+                        <li>Create a new form and copy the 8-character form hash ID.</li>
+                        <li>Paste it below or define it as <code className="bg-gray-200 px-1 font-mono text-[10px]">VITE_FORMSPREE_FORM_ID</code> in your env.</li>
+                      </ol>
+
+                      <div className="space-y-1.5 pt-1">
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-black">Formspree Form ID / Hash</label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="e.g. xanygzoq"
+                            value={formspreeId}
+                            onChange={(e) => {
+                              const val = e.target.value.trim();
+                              setFormspreeId(val);
+                              localStorage.setItem("aman_formspree_id", val);
+                            }}
+                            className="flex-1 border border-gray-300 bg-white px-3 py-1.5 text-xs font-mono focus:border-black focus:outline-none"
+                          />
+                          {formspreeId && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFormspreeId("");
+                                localStorage.removeItem("aman_formspree_id");
+                              }}
+                              className="border border-gray-300 bg-white px-2 py-1.5 text-gray-500 hover:text-black hover:border-black text-[10px] uppercase font-bold"
+                            >
+                              Clear
+                            </button>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-gray-400">
+                          {formspreeId 
+                            ? "✅ Active. Messages will route through Formspree." 
+                            : "⚠️ Disabled. Falling back to the direct mailto: link."}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {errorMsg && (
                   <p className="text-xs text-black font-bold uppercase border border-black bg-white p-2.5" id="form-error-text">
