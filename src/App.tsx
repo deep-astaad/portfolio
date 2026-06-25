@@ -14,6 +14,7 @@ import Projects from "./components/Projects";
 import Blog from "./components/Blog";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import AICompanion from "./components/AICompanion";
 
 import { EXPERIENCES, PERSONAL_INFO } from "./data";
 
@@ -252,13 +253,16 @@ export default function App() {
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
             id="scroll-to-top-button"
-            className="fixed bottom-6 right-6 z-40 flex h-10 w-10 items-center justify-center bg-black text-white hover:bg-white hover:text-black border border-black transition-colors duration-150 cursor-pointer"
+            className="fixed bottom-6 right-20 z-40 flex h-10 w-10 items-center justify-center bg-black text-white hover:bg-white hover:text-black border border-black transition-colors duration-150 cursor-pointer"
             aria-label="Scroll to top"
           >
             <ArrowUp size={16} />
           </motion.button>
         )}
       </AnimatePresence>
+
+      {/* Interactive AI Portfolio Companion */}
+      <AICompanion />
     </div>
   );
 }

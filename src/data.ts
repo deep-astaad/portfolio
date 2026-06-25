@@ -38,7 +38,7 @@ export const CERTIFICATIONS: Certification[] = [
     id: "coursera-ml",
     title: "Supervised Machine Learning: Regression and Classification",
     issuer: "Coursera / Stanford University / DeepLearning.AI",
-    dateRange: "June 2026",
+    dateRange: "August 2023",
     credentialUrl: "https://www.coursera.org/account/accomplishments/verify/3KHETA8P5E5B"
   }
 ];
