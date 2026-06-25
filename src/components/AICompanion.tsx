@@ -328,33 +328,90 @@ ${isLiveConnection
     try {
       let botResponseText = "";
 
-      // Attempt transmitting to Serverless Backend first
-      try {
-        const response = await fetch(backendUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify({ message: textToSend })
-        });
+      const localResponse = getDemoResponse(textToSend);
+      const isFallback = localResponse.includes("Aman's Portfolio Companion");
 
-        if (response.ok) {
-          const data = await response.json();
-          botResponseText = data.reply || data.message || "I received a blank reply from the AI service.";
-        } else {
-          throw new Error(`Server returned status: ${response.status}`);
+      // Bypasses the serverless AI if it's a Quick Action or a direct local match (avoiding remote LLM overhead)
+      if (isQuick || !isFallback) {
+        // Resolve instantly/with a small natural delay to simulate active typing
+        await new Promise(resolve => setTimeout(resolve, 500));
+        botResponseText = localResponse;
+      } else {
+        // Attempt transmitting to Serverless Backend first
+        const controller = new AbortController();
+        let timedOut60 = false;
+
+        const timer30 = setTimeout(() => {
+          setMessages(prev => [
+            ...prev,
+            {
+              id: `delay-30-${Date.now()}`,
+              sender: "bot",
+              text: "⚡ **Good question!** Hold on, it's taking some extra time to think about the answer...",
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+        }, 30000);
+
+        const timer45 = setTimeout(() => {
+          setMessages(prev => [
+            ...prev,
+            {
+              id: `delay-45-${Date.now()}`,
+              sender: "bot",
+              text: "⏳ **Still processing...** I'm deeply analyzing the archives to synthesize the best response. Almost there!",
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+        }, 45000);
+
+        const timer60 = setTimeout(() => {
+          timedOut60 = true;
+          controller.abort();
+        }, 60000);
+
+        try {
+          const response = await fetch(backendUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({ message: textToSend }),
+            signal: controller.signal
+          });
+
+          clearTimeout(timer30);
+          clearTimeout(timer45);
+          clearTimeout(timer60);
+
+          if (response.ok) {
+            const data = await response.json();
+            botResponseText = data.reply || data.message || "I received a blank reply from the AI service.";
+          } else {
+            throw new Error(`Server returned status: ${response.status}`);
+          }
+        } catch (backendErr: any) {
+          clearTimeout(timer30);
+          clearTimeout(timer45);
+          clearTimeout(timer60);
+
+          if (timedOut60 || backendErr?.name === "AbortError") {
+            botResponseText = `⚠️ **Connection Timeout (60s)**
+
+The live Serverless AI took too long to respond. Please try asking one of the **Suggested Commands** below (like **"🏆 Why hire Aman?"** or **"⚡ Skills & Tech Stack"**), which resolve instantly from our high-speed local pre-loaded answer engine!`;
+          } else {
+            console.error("=== AI COPILOT BACKEND ERROR DIAGNOSTIC ===");
+            console.error("Target URL:", backendUrl);
+            console.error("Error Message:", backendErr?.message || backendErr);
+            console.error("Possible Causes:");
+            console.error("1. CORS Mismatch: Check if 'ALLOWED_ORIGIN' in your Vercel Environment Variables matches your current origin exactly (e.g. 'https://deep-astaad.github.io' without trailing slash).");
+            console.error("2. Browser Shield / Adblocker: Brave Shields or extensions like uBlock Origin might block '/api/chat' endpoints by default. Try disabling shields for the site.");
+            console.error("3. Vercel Cold Start / Timeout: If the serverless function takes >10 seconds to respond, the browser might show a network error.");
+            console.error("==========================================");
+            botResponseText = localResponse;
+          }
         }
-      } catch (backendErr: any) {
-        console.error("=== AI COPILOT BACKEND ERROR DIAGNOSTIC ===");
-        console.error("Target URL:", backendUrl);
-        console.error("Error Message:", backendErr?.message || backendErr);
-        console.error("Possible Causes:");
-        console.error("1. CORS Mismatch: Check if 'ALLOWED_ORIGIN' in your Vercel Environment Variables matches your current origin exactly (e.g. 'https://deep-astaad.github.io' without trailing slash).");
-        console.error("2. Browser Shield / Adblocker: Brave Shields or extensions like uBlock Origin might block '/api/chat' endpoints by default. Try disabling shields for the site.");
-        console.error("3. Vercel Cold Start / Timeout: If the serverless function takes >10 seconds to respond, the browser might show a network error.");
-        console.error("==========================================");
-        botResponseText = getDemoResponse(textToSend);
       }
 
       const botMsg: Message = {
