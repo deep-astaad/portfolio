@@ -30,65 +30,91 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
   useEffect(() => {
     if (activeTab !== "home") return;
 
-    const sections = ["hero-section", "skills-section", "projects-section", "experience-section"];
-    const observers = sections.map((id) => {
-      const el = document.getElementById(id);
-      if (!el) return null;
+    const handleScroll = () => {
+      const sections = [
+        { id: "home", el: document.getElementById("hero-section") },
+        { id: "skills", el: document.getElementById("skills-section") },
+        { id: "projects", el: document.getElementById("projects-section") },
+        { id: "experience", el: document.getElementById("experience-section") },
+      ];
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            if (id === "hero-section") {
-              setActiveSection("home");
-            } else if (id === "skills-section") {
-              setActiveSection("skills");
-            } else if (id === "projects-section") {
-              setActiveSection("projects");
-            } else if (id === "experience-section") {
-              setActiveSection("experience");
-            }
-          }
-        },
-        { threshold: 0.15, rootMargin: "-80px 0px -50% 0px" }
-      );
-      observer.observe(el);
-      return { observer, el };
-    });
+      let maxVisibleHeight = 0;
+      let currentActive = "home";
 
-    return () => {
-      observers.forEach((obs) => {
-        if (obs) obs.observer.unobserve(obs.el);
+      const viewportHeight = window.innerHeight;
+      const headerHeight = 80; // height of the sticky header
+
+      sections.forEach(({ id, el }) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        
+        // Calculate the overlap of the section with the visible viewport (excluding header)
+        const visibleTop = Math.max(headerHeight, rect.top);
+        const visibleBottom = Math.min(viewportHeight, rect.bottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+        if (visibleHeight > maxVisibleHeight) {
+          maxVisibleHeight = visibleHeight;
+          currentActive = id;
+        }
       });
+
+      setActiveSection(currentActive);
+    };
+
+    // Run once after animations have settled to ensure elements exist in DOM
+    const timeoutId = setTimeout(handleScroll, 400);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [activeTab]);
 
   const handleNavClick = (target: string | { id: string; label: string; type: string; targetId?: string }) => {
-    if (typeof target === "string") {
-      setActiveTab(target as "home" | "blog" | "contact");
-      setIsOpen(false);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else if (target.type === "scroll" && target.targetId) {
-      if (activeTab !== "home") {
-        setActiveTab("home");
-        // Wait for Home tab to render
-        setTimeout(() => {
-          const el = document.getElementById(target.targetId!);
+    // Save whether mobile menu was open and close it
+    const isMobileMenuOpen = isOpen;
+    setIsOpen(false);
+
+    // If mobile drawer is open, wait for exit transition (200ms) before scrolling to avoid scroll cancellation
+    const delay = isMobileMenuOpen ? 250 : 0;
+
+    setTimeout(() => {
+      if (typeof target === "string") {
+        setActiveTab(target as "home" | "blog" | "contact");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (target.type === "scroll" && target.targetId) {
+        if (activeTab !== "home") {
+          setActiveTab("home");
+          // Wait for Home tab entry animation (250ms tab switch duration)
+          setTimeout(() => {
+            const el = document.getElementById(target.targetId!);
+            if (el) {
+              const elementPosition = el.getBoundingClientRect().top;
+              const offsetPosition = elementPosition + window.scrollY - 80; // 80px offset for sticky header
+              window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth"
+              });
+            }
+          }, 300);
+        } else {
+          const el = document.getElementById(target.targetId);
           if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
+            const elementPosition = el.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.scrollY - 80; // 80px offset for sticky header
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth"
+            });
           }
-        }, 150);
-      } else {
-        const el = document.getElementById(target.targetId);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
         }
+      } else {
+        setActiveTab(target.id as "home" | "blog" | "contact");
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
-      setIsOpen(false);
-    } else {
-      setActiveTab(target.id as "home" | "blog" | "contact");
-      setIsOpen(false);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    }, delay);
   };
 
   return (
@@ -116,9 +142,11 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
         <nav className="hidden lg:flex items-center space-x-1" id="desktop-nav">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = item.type === "scroll"
-              ? (activeTab === "home" && activeSection === item.id)
-              : (activeTab === item.id);
+            const isActive = item.id === "home"
+              ? (activeTab === "home" && activeSection === "home")
+              : item.type === "scroll"
+                ? (activeTab === "home" && activeSection === item.id)
+                : (activeTab === item.id);
             return (
               <button
                 key={item.id}
@@ -182,9 +210,11 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
             <div className="space-y-1 px-4 pt-2 pb-4">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = item.type === "scroll"
-                  ? (activeTab === "home" && activeSection === item.id)
-                  : (activeTab === item.id);
+                const isActive = item.id === "home"
+                  ? (activeTab === "home" && activeSection === "home")
+                  : item.type === "scroll"
+                    ? (activeTab === "home" && activeSection === item.id)
+                    : (activeTab === item.id);
                 return (
                   <button
                     key={item.id}

@@ -253,7 +253,7 @@ export default function App() {
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
             id="scroll-to-top-button"
-            className="fixed bottom-6 right-20 z-40 flex h-10 w-10 items-center justify-center bg-black text-white hover:bg-white hover:text-black border border-black transition-colors duration-150 cursor-pointer"
+            className="fixed bottom-20 right-4 sm:bottom-28 sm:right-6 z-40 flex h-10 w-10 items-center justify-center bg-black text-white hover:bg-white hover:text-black border border-black transition-colors duration-150 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
             aria-label="Scroll to top"
           >
             <ArrowUp size={16} />

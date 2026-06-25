@@ -21,14 +21,62 @@ interface Message {
 
 const QUICK_ACTIONS = [
   { id: "why-hire", label: "🏆 Why hire Aman?", prompt: "Why should a company hire Aman Deep Singh? Highlight his top contributions and certifications." },
-  { id: "mock-interview", label: "💬 Mock Interview", prompt: "Conduct a mock technical interview where you are the interviewer asking me backend/cloud engineering questions, or play as Aman being interviewed." },
-  { id: "scraping-ai", label: "🕷️ Scraping-AI Project", prompt: "Explain the architecture of Aman's Scraping-AI Pipeline running on AWS ECS/Fargate in detail." },
-  { id: "cover-letter", label: "📄 Draft Cover Letter", prompt: "Draft an elegant, professional cover letter from Aman tailored for a Senior Backend or DevOps Engineer role, highlighting his achievements." }
+  { id: "cover-letter", label: "📄 Draft Cover Letter", prompt: "Draft an elegant, professional cover letter from Aman. (Tip: You can also paste your actual Job Description into the chat to get a highly-tailored custom cover letter & match evaluation!)" },
+  { id: "work-projects", label: "💼 Work & Projects", prompt: "What is Aman doing currently, and what are his major backend/cloud engineering projects?" },
+  { id: "skills-stack", label: "⚡ Skills & Tech Stack", prompt: "What are Aman's core technical skills, databases, cloud expertise, and architectural concepts?" },
+  { id: "education-certs", label: "🎓 Education & Certifications", prompt: "Tell me about Aman's education background, academic focus, and AWS certifications." }
 ];
 
 // Pre-programmed smart answers for Local/Demo Mode
 const getDemoResponse = (userInput: string): string => {
   const query = userInput.toLowerCase();
+
+  // Detect job description submissions or explicit requests for alignment/matching
+  if (
+    query.includes("job description") || 
+    query.includes("jd") || 
+    query.includes("responsibilities") || 
+    query.includes("requirements") || 
+    query.includes("looking for") || 
+    query.includes("preferred qualifications") ||
+    (query.length > 200 && (query.includes("engineer") || query.includes("developer") || query.includes("cloud") || query.includes("backend")))
+  ) {
+    return `### ⚡ Custom Profile Alignment & Job Match Analysis
+
+Thank you for providing the job description! Based on the specifications you provided, here is an analysis of how **Aman Deep Singh's** engineering profile matches your role:
+
+#### 📊 Core Alignment & Match Analysis:
+* **Backend Systems & REST APIs (100% Match)**: Your requirement for scalable API endpoints fits perfectly with Aman's track record of optimizing **TANOMEE** (reducing latency by **45%** for **700+ daily active users**) and designing robust services in **Python & FastAPI**.
+* **Cloud & DevOps Infrastructure (100% Match)**: Your focus on modern, resilient cloud deployments aligns with Aman's active certifications (**AWS Solutions Architect** and **AWS CloudOps Engineer**) and hands-on experience containerizing services on **AWS ECS/Fargate**.
+* **Distributed Task & Queue Architectures (100% Match)**: Aman's deep expertise in asynchronous execution patterns (**Celery, Redis, RabbitMQ**) with dead letter handling guarantees high performance under heavy transaction rates.
+
+---
+
+#### 📄 Tailored Cover Letter Draft:
+
+**Subject: Application for Backend / Cloud Reliability Engineering Role - Aman Deep Singh**
+
+Dear Hiring Team,
+
+I am writing to express my strong interest in joining your engineering organization. Having reviewed your job requirements, I am confident that my background building high-throughput, fault-tolerant backend applications and scaling cloud infrastructure on AWS aligns perfectly with your goals.
+
+At **SMS DataTech Corporation** in Tokyo, Japan, I have engineered and maintained high-scale production systems with high availability:
+* **High-Throughput Scrapers**: Designed and operated a distributed web crawling platform on AWS ECS/Fargate managing **1,000+ concurrent requests** and processing **3M+ records** monthly.
+* **API Latency Slashed**: Redesigned endpoints and optimized PostgreSQL / RDS queries to reduce application latency by **45%** on our core TANOMEE platform.
+* **Observability Engineering**: Built self-healing telemetry pipelines and dashboards that reduced Mean Time to Detection (MTTD) by **70%** and Mean Time to Resolution (MTTR) by **50%**.
+
+Holding active **AWS Certified Solutions Architect** and **AWS Certified CloudOps Engineer** credentials, I possess expert-level mastery over Python, Docker, Celery, and SQL databases, while actively expanding my toolkit into high-performance backend development in **Golang**.
+
+I would welcome the opportunity to discuss how my hands-on production engineering experience can support your team.
+
+Sincerely,  
+**Aman Deep Singh**  
+[Aman's LinkedIn Profile](https://linkedin.com/in/deepamansinghads) | [AWS Solutions Architect Verification](https://www.credly.com/badges/3600e50d-6d46-48f3-a572-1589c71d1856/public_url)
+
+---
+
+**💡 Suggested Follow-up:** *"Can we run a mock technical interview matching this role?"*`;
+  }
 
   if (query.includes("why") && (query.includes("hire") || query.includes("hire aman") || query.includes("special"))) {
     return `### Why Hire Aman Deep Singh?
@@ -48,22 +96,88 @@ Aman is a **Backend & Cloud Engineer** with a proven track record of designing, 
    - Designed self-healing log aggregation systems that slashed **Mean Time to Detection (MTTD) by 70%** and **Mean Time to Resolution (MTTR) by 50%**.
 
 4. **Modern Tech Stack**:
-   - Master of Python, FastAPI, Django, Scrapy, Celery, Redis, RabbitMQ, Docker, and IaC tooling (Terraform/CloudFormation).`;
+   - Master of Python, FastAPI, Django, Scrapy, Celery, Redis, RabbitMQ, Docker, and IaC tooling (Terraform/CloudFormation).
+
+---
+
+**📝 Want to see if Aman is a match?**
+Simply **copy and paste your Job Description** into the chat box! I will analyze the requirements and explain exactly how Aman's skills and backend/cloud engineering experience align with your role.
+
+**💡 Suggested Follow-up:** *"How does Aman's profile align with this job description: [Paste job description here]?"*`;
   }
 
-  if (query.includes("scraping") || query.includes("crawler") || query.includes("proxy")) {
-    return `### Aman's Scraping-AI Pipeline
+  if (query.includes("current") || query.includes("role") || query.includes("work") || query.includes("project") || query.includes("sms") || query.includes("datatech") || query.includes("organization")) {
+    return `### Aman's Professional Experience & Key Projects
 
-Aman designed and operated an enterprise-grade, distributed extraction platform from scratch. Key features include:
+Aman is currently working as a **Software Engineer** at **SMS DataTech Corporation** in Tokyo, Japan (since October 2024, following a successful 1.5-year internship there). He specializes in high-scale backend engines, cloud reliability, and distributed systems.
 
-* **High-Performance Cluster**: Built on **AWS ECS/Fargate**, coordinating multi-threaded scrapers.
-* **Smart Orchestration**: Used **Celery** with **Redis** as a distributed broker for task dispatching.
-* **Anti-Bot Defeat**: Implemented rotating residential proxy pools, cookie-jar synchronization, and human behavior simulator headers.
-* **LLM Extraction**: Integrated the **Gemini API** directly inside the pipeline to convert raw, unstructured HTML into structured, validated JSON schemas with a **99.8% success rate**!`;
+#### 💼 Work & High-Impact Achievements at SMS DataTech
+* **TANOMEE Platform Optimization**: Led backend development of the company's internal work-learning platform used by **700+ daily active employees**. He redesigned REST APIs and optimized database queries, reducing latency by **45%**.
+* **Cloud Infrastructure Management**: Provisions and manages production databases (**PostgreSQL, RDS/Aurora, Redis, S3**) using Infrastructure-as-Code (IaC) workflows on AWS.
+* **Reliability Engineering**: Implemented real-time log streaming and custom telemetry dashboards, reducing Mean Time to Detection (MTTD) by **70%** and Mean Time to Resolution (MTTR) by **50%**.
+
+#### 🚀 Key Highlighted Projects
+1. **Distributed AWS Web Scraping Platform**:
+   - Architected a massive 24/7 web crawling cluster on **AWS ECS/Fargate**.
+   - Handles **1,000+ concurrent requests** and extracts over **3,000,000 records** monthly.
+   - Built with **FastAPI, Scrapy, and Celery** using **Redis/RabbitMQ** as task queues with robust automatic retry strategies.
+2. **Asynchronous Queue Tuning & Dead Letter Queueing**:
+   - Designed reliable microservice asynchronous communication pathways.
+   - Configured custom queue rules, DLQ containment, and prefetch limits to maintain peak performance under highly concurrent workloads.
+
+---
+
+**💡 Suggested Follow-up:** *"What is Aman's educational background and cloud certifications?"*`;
+  }
+
+  if (query.includes("education") || query.includes("cert") || query.includes("degree") || query.includes("university") || query.includes("study") || query.includes("academic") || query.includes("aws")) {
+    return `### Education & Professional Certifications
+
+Aman pairs a solid foundation in computer science with advanced, industry-recognized cloud credentials and continuous learning:
+
+#### 🎓 Academic Background
+* **Bachelor of Engineering (B.E. / B.Tech) in Computer Science & Engineering**
+  * **Core Focus**: Distributed computing systems, databases, operating systems, advanced data structures, and algorithmic analysis.
+  * **Algorithmic Strength**: Proactive problem solver who has solved **1,000+ competitive programming challenges** across Codeforces, LeetCode, and HackerRank.
+
+#### 🏆 Professional AWS Certifications
+* **AWS Certified Solutions Architect – Associate** (Oct 2025 – Oct 2028)
+  * *Verification*: [View AWS Credential](https://www.credly.com/badges/3600e50d-6d46-48f3-a572-1589c71d1856/public_url)
+  * Validates expertise in designing secure, resilient, high-performing, and cost-optimized cloud architectures.
+* **AWS Certified CloudOps Engineer – Associate** (May 2026 – May 2029)
+  * *Verification*: [View AWS Credential](https://www.credly.com/badges/7eab8dcc-7cae-49c5-80a9-67ab01026db4/public_url)
+  * Validates skills in provisioning, operating, and managing highly available, scalable, and self-healing systems on AWS.
+
+#### 📚 Current Active Studies & Skills Development
+* **Golang (Go)**: Aman is actively learning Go to expand his high-performance backend capabilities alongside Python.
+* **Advanced System Design**: Currently deep-diving into distributed consensus, cache invalidation strategies, and large-scale partitioning structures.
+
+---
+
+**💡 Suggested Follow-up:** *"What languages or technologies is Aman currently studying?"*`;
+  }
+
+  if (query.includes("skills") || query.includes("stack") || query.includes("tech") || query.includes("language") || query.includes("python") || query.includes("go") || query.includes("database") || query.includes("tool")) {
+    return `### Aman's Core Technical Skills & Stack
+
+Aman's skill set is focused heavily on backend efficiency, cloud operations, and distributed queue architecture:
+
+* **Programming Languages**: Python (expert), SQL, Go (actively learning), C/C++, and JavaScript.
+* **Frameworks & Orchestration**: FastAPI, Django / Django REST Framework, Scrapy, Celery, Redis, RabbitMQ, and Docker.
+* **Cloud & DevOps**: AWS (ECS/Fargate, RDS, S3, EC2), CloudWatch, CloudFormation, Terraform, and GitHub Actions (CI/CD).
+* **Databases**: PostgreSQL, MySQL, RDS/Aurora, and Redis.
+* **Infrastructure & Reliability**: Container Orchestration, Autoscaling, Log Aggregation, Monitoring & Alerting, Fault Tolerance, and SLA/SLO design.
+* **Architectural Concepts**: Distributed Systems, Event-Driven Architecture, Microservices, System Design, Production Operations, and REST APIs.
+
+---
+
+**💡 Suggested Follow-up:** *"Can you share details about some of his production engineering projects?"*`;
   }
 
   if (query.includes("cover") || query.includes("letter") || query.includes("apply")) {
     return `### Custom Draft Cover Letter (Sample)
+
+> 💡 **Tip:** Want a customized cover letter? **Copy & paste your Job Description** directly into the chat! I will automatically analyze it and draft a highly-tailored letter matching Aman's skills to your exact requirements.
 
 **Subject: Application for Backend / Cloud Reliability Engineer**
 
@@ -80,7 +194,14 @@ I would love to bring my experience in high-performance automation, Celery queue
 
 Sincerely,  
 **Aman Deep Singh**  
-*Tokyo, Japan*`;
+*Tokyo, Japan*
+
+---
+
+**📝 Customize This Cover Letter:**
+Simply **copy and paste your Job Description** into the chat box! I will analyze the specifications against Aman's background to draft a custom-tailored cover letter and provide an alignment overview.
+
+**💡 Suggested Follow-up:** *"Draft a tailored cover letter for this job description: [Paste your job description here]"*`;
   }
 
   if (query.includes("interview") || query.includes("mock") || query.includes("question")) {
@@ -105,14 +226,15 @@ Let's do a quick mock technical challenge! Here is a core system design question
   // Fallback smart response
   return `### Hello! I am Aman's Portfolio Companion.
 
-I can help answer questions about Aman's background, professional experience, and technical projects. 
+I can help answer questions about Aman's background, professional experience, projects, skills, and cloud credentials. 
 
 Here's what you can ask me:
 * **"Why should we hire Aman?"** to hear about his top contributions and AWS certifications.
-* **"Tell me about the Scraping-AI project."** to explore his backend scaling experience.
-* **"Draft a cover letter"** to see a personalized template.
-* **"What is his experience in SMS DataTech?"** to understand his software engineering roles.`;
-};
+* **"Draft a cover letter"** to view a tailored professional cover letter draft (or paste your job description to match).
+* **"Tell me about his work & projects."** to learn about SMS DataTech and key architectural systems.
+* **"What is his technical stack?"** to view his programming languages, cloud skills, and databases.
+* **"Tell me about his education and certifications."** to see his academic background and AWS credentials.`;
+}
 
 export default function AICompanion() {
   const [isOpen, setIsOpen] = useState(false);
@@ -124,6 +246,17 @@ export default function AICompanion() {
 
   // Determine backend URL
   const backendUrl = (import.meta.env.VITE_AI_BACKEND_URL as string) || "https://portfolio-ai-backend-peach.vercel.app/api/chat";
+
+  // Support opening the chat globally via a custom window event
+  useEffect(() => {
+    const handleOpenChat = () => {
+      setIsOpen(true);
+    };
+    window.addEventListener("open-ai-chat", handleOpenChat);
+    return () => {
+      window.removeEventListener("open-ai-chat", handleOpenChat);
+    };
+  }, []);
 
   // Check backend health on mount
   useEffect(() => {
@@ -301,6 +434,44 @@ ${isLiveConnection
     });
   };
 
+  const renderTextWithLinks = (text: string) => {
+    const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    let lastIndex = 0;
+    const elements: React.ReactNode[] = [];
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      const matchIndex = match.index;
+      const linkText = match[1];
+      const linkUrl = match[2];
+
+      if (matchIndex > lastIndex) {
+        elements.push(text.substring(lastIndex, matchIndex));
+      }
+
+      elements.push(
+        <a
+          key={matchIndex}
+          href={linkUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          referrerPolicy="no-referrer"
+          className="text-indigo-600 hover:text-indigo-800 underline font-medium decoration-indigo-300 transition-colors"
+        >
+          {linkText}
+        </a>
+      );
+
+      lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      elements.push(text.substring(lastIndex));
+    }
+
+    return elements.length > 0 ? elements : text;
+  };
+
   const renderBoldText = (text: string) => {
     const parts = text.split("**");
     return parts.map((part, i) => {
@@ -316,7 +487,7 @@ ${isLiveConnection
             </code>
           );
         }
-        return sub;
+        return renderTextWithLinks(sub);
       });
 
       if (isBold) {
@@ -331,31 +502,34 @@ ${isLiveConnection
   return (
     <>
       {/* Floating launcher badge */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
-        <AnimatePresence>
-          {!isOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.9 }}
-              className="bg-black text-white px-3.5 py-1.5 border border-black font-mono text-[9px] uppercase tracking-widest flex items-center space-x-1.5 shadow-sm select-none"
-              id="ai-launcher-tooltip"
-            >
-              <Sparkles size={10} className="text-white animate-pulse" />
-              <span>Ask Aman AI</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end">
         <button
           onClick={() => setIsOpen(!isOpen)}
           id="ai-companion-launcher"
-          className="flex h-12 w-12 items-center justify-center bg-black text-white hover:bg-white hover:text-black border border-black transition-all duration-150 shadow-md cursor-pointer relative"
+          className="flex items-center space-x-1.5 sm:space-x-2.5 px-3 py-2.5 sm:px-5 sm:py-3.5 bg-black text-white hover:bg-white hover:text-black border-2 border-black transition-all duration-200 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] sm:hover:translate-x-[2px] sm:hover:translate-y-[2px] active:translate-x-[2px] active:translate-y-[2px] sm:active:translate-x-[4px] sm:active:translate-y-[4px] cursor-pointer relative overflow-hidden group select-none"
           aria-label="Toggle AI Companion"
         >
-          {isOpen ? <X size={18} /> : <Sparkles size={18} className="animate-pulse" />}
+          {/* Subtle neon gradient bar indicating AI features */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-violet-500 via-purple-500 via-pink-500 to-amber-400 animate-pulse" />
+          
+          <div className="relative flex items-center justify-center">
+            {isOpen ? (
+              <X size={12} className="stroke-[2.5] sm:size-[14px]" />
+            ) : (
+              <Sparkles size={12} className="text-amber-300 animate-pulse fill-amber-300/20 sm:size-[14px]" />
+            )}
+          </div>
+          
+          <span className="font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.12em] sm:tracking-[0.15em] leading-none">
+            {isOpen ? "Close AI" : "Ask Aman AI"}
+          </span>
+
+          {/* Real-time backend status dot */}
           {isLiveConnection && !isOpen && (
-            <div className="absolute -top-1 -right-1 h-2.5 w-2.5 bg-green-500 border border-white" />
+            <span className="flex h-1.5 w-1.5 sm:h-2 sm:w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-green-500 border border-black" />
+            </span>
           )}
         </button>
       </div>
@@ -368,7 +542,7 @@ ${isLiveConnection
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
             transition={{ type: "spring", duration: 0.4 }}
-            className="fixed bottom-22 right-6 z-50 w-[360px] sm:w-[400px] h-[520px] bg-white border border-black flex flex-col shadow-2xl"
+            className="fixed bottom-22 left-4 right-4 sm:left-auto sm:right-6 sm:w-[400px] h-[520px] bg-white border border-black flex flex-col shadow-2xl z-50"
             id="ai-companion-panel"
           >
             {/* Header Motif */}

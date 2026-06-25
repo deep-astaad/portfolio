@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from "react";
-import { Github, Linkedin, Mail, MapPin, Award, FileText, ExternalLink, ChevronRight, CheckCircle, Code, Trophy, Eye, Download } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, Award, FileText, ExternalLink, ChevronRight, CheckCircle, Code, Trophy, Eye, Download, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { PERSONAL_INFO, CERTIFICATIONS, SKILL_CATEGORIES } from "../data";
 import Avatar from "./Avatar";
@@ -67,6 +67,30 @@ export default function Hero({ setActiveTab }: HeroProps) {
                 {PERSONAL_INFO.title}
               </motion.h2>
             </div>
+
+            {/* Quick Interactive AI Chat trigger button */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="pt-1 pb-2 flex"
+            >
+              <button
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("open-ai-chat"));
+                }}
+                className="inline-flex items-center space-x-2 px-4 py-2.5 bg-black text-white hover:bg-white hover:text-black border-2 border-black font-mono text-[10px] font-bold uppercase tracking-[0.12em] transition-all duration-200 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] cursor-pointer group relative overflow-hidden select-none"
+                id="hero-ai-chat-trigger"
+              >
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-violet-500 via-purple-500 via-pink-500 to-amber-400 animate-pulse" />
+                <Sparkles size={12} className="text-amber-300 animate-pulse fill-amber-300/10 group-hover:text-purple-600 transition-colors" />
+                <span>Ask My AI Copilot</span>
+                <span className="flex h-1.5 w-1.5 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500" />
+                </span>
+              </button>
+            </motion.div>
 
             {/* Social Links & Meta Info (Moved right below title text) */}
             <motion.div 
@@ -136,7 +160,7 @@ export default function Hero({ setActiveTab }: HeroProps) {
                 className="inline-flex items-center justify-center space-x-2 border border-black bg-white px-6 py-3 font-sans text-xs font-semibold uppercase tracking-wider text-black transition-all hover:bg-black hover:text-white duration-200"
               >
                 <FileText size={14} className="text-gray-500" />
-                <span>Interactive CV</span>
+                <span>View CV</span>
               </button>
 
               <a
@@ -146,7 +170,7 @@ export default function Hero({ setActiveTab }: HeroProps) {
                 className="inline-flex items-center justify-center space-x-2 border border-black bg-white px-6 py-3 font-sans text-xs font-semibold uppercase tracking-wider text-black transition-all hover:bg-black hover:text-white group duration-200"
               >
                 <Download size={14} className="text-gray-500 group-hover:text-white transition-colors" />
-                <span>PDF Resume</span>
+                <span>Download CV</span>
               </a>
             </motion.div>
 
