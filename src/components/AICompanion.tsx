@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Sparkles, X, Send, Terminal, User, Bot, ExternalLink, 
-  RefreshCw, FileText, Check, HelpCircle, AlertCircle
+  RefreshCw, FileText, Check, HelpCircle, AlertCircle, Trash2
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { PERSONAL_INFO } from "../data";
@@ -239,10 +239,35 @@ Here's what you can ask me:
 export default function AICompanion() {
   const [isOpen, setIsOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const saved = localStorage.getItem("portfolio_ai_messages");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Failed to parse saved messages:", e);
+      }
+    }
+    return [];
+  });
+
+  const [sessionId, setSessionId] = useState<string | null>(() => {
+    return localStorage.getItem("portfolio_ai_session_id");
+  });
+
   const [isLiveConnection, setIsLiveConnection] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-save messages to localStorage when updated
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem("portfolio_ai_messages", JSON.stringify(messages));
+    } else {
+      localStorage.removeItem("portfolio_ai_messages");
+    }
+  }, [messages]);
 
   // Determine backend URL
   const backendUrl = (import.meta.env.VITE_AI_BACKEND_URL as string) || "https://portfolio-ai-backend-peach.vercel.app/api/chat";
@@ -377,7 +402,10 @@ ${isLiveConnection
               "Content-Type": "application/json",
               "Accept": "application/json"
             },
-            body: JSON.stringify({ message: textToSend }),
+            body: JSON.stringify({ 
+              message: textToSend,
+              sessionId: sessionId || undefined
+            }),
             signal: controller.signal
           });
 
@@ -388,6 +416,12 @@ ${isLiveConnection
           if (response.ok) {
             const data = await response.json();
             botResponseText = data.reply || data.message || "I received a blank reply from the AI service.";
+            
+            // Overwrite stored sessionId if a different one is returned
+            if (data.sessionId && data.sessionId !== sessionId) {
+              setSessionId(data.sessionId);
+              localStorage.setItem("portfolio_ai_session_id", data.sessionId);
+            }
           } else {
             throw new Error(`Server returned status: ${response.status}`);
           }
@@ -615,6 +649,22 @@ The live Serverless AI took too long to respond. Please try asking one of the **
               </div>
 
               <div className="flex items-center space-x-1">
+                {messages.length > 1 && (
+                  <button
+                    onClick={() => {
+                      if (window.confirm("Are you sure you want to clear this conversation history?")) {
+                        localStorage.removeItem("portfolio_ai_messages");
+                        localStorage.removeItem("portfolio_ai_session_id");
+                        setSessionId(null);
+                        setMessages([]);
+                      }
+                    }}
+                    title="Clear Conversation"
+                    className="p-1.5 hover:bg-gray-800 text-gray-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                )}
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-1.5 hover:bg-gray-800 transition-colors cursor-pointer"
