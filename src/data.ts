@@ -111,6 +111,7 @@ export const PROJECTS: Project[] = [
     date: "2025",
     metrics: ["99.8% Extraction Success", "Gemini API integration", "3M+ rows processed monthly"],
     tags: ["Python", "Scrapy", "AWS ECS/Fargate", "Celery", "Redis", "Gemini API", "Docker"],
+    liveUrl: "https://pig-data.jp/service/scraping-ai",
     category: "work",
     highlights: [
       "Architected a distributed crawling cluster running on AWS ECS/Fargate, coordinating multi-threaded scrapers with Celery and Redis to handle millions of monthly extractions.",
@@ -127,6 +128,7 @@ export const PROJECTS: Project[] = [
     metrics: ["100% automated daily runs", "OpenAI parsing", "Discord notification integration"],
     tags: ["Django", "MySQL", "Celery", "Redis", "Apify", "OpenAI API", "Chrome Extension"],
     github: "https://github.com/deep-astaad/job-hunt",
+    liveUrl: "http://jobhunt.neovara.uk/",
     category: "personal",
     highlights: [
       "Built a Celery-based async pipeline with daily scheduled triggers, a Django REST API backend, and Redis task reconciliation with automatic failure recovery.",

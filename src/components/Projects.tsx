@@ -196,25 +196,42 @@ export default function Projects() {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-                  {selectedProject.github ? (
-                    <a
-                      href={selectedProject.github}
-                      target="_blank"
-                      rel="noreferrer"
-                      id="modal-source-link"
-                      className="inline-flex items-center space-x-1.5 font-sans text-xs font-semibold uppercase tracking-wider text-gray-700 hover:text-black"
-                    >
-                      <Github size={14} />
-                      <span className="underline">Source Code</span>
-                    </a>
-                  ) : (
-                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider italic">Proprietary</span>
-                  )}
+                <div className="flex items-center justify-between pt-6 border-t border-gray-200 flex-wrap gap-4">
+                  <div className="flex items-center space-x-4">
+                    {selectedProject.github && (
+                      <a
+                        href={selectedProject.github}
+                        target="_blank"
+                        rel="noreferrer"
+                        id="modal-source-link"
+                        className="inline-flex items-center space-x-1.5 font-sans text-xs font-semibold uppercase tracking-wider text-gray-700 hover:text-black transition-colors"
+                      >
+                        <Github size={14} />
+                        <span className="underline">Source Code</span>
+                      </a>
+                    )}
+
+                    {selectedProject.liveUrl && (
+                      <a
+                        href={selectedProject.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        id="modal-live-link"
+                        className="inline-flex items-center space-x-1.5 font-sans text-xs font-semibold uppercase tracking-wider text-indigo-600 hover:text-indigo-800 transition-colors"
+                      >
+                        <ExternalLink size={14} />
+                        <span className="underline">Live Link</span>
+                      </a>
+                    )}
+
+                    {!selectedProject.github && !selectedProject.liveUrl && (
+                      <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider italic">Proprietary</span>
+                    )}
+                  </div>
 
                   <button
                     onClick={() => setSelectedProject(null)}
-                    className="border border-black bg-black px-4 py-2 font-sans text-xs font-semibold uppercase tracking-wider text-white hover:bg-white hover:text-black hover:border-black transition-colors duration-150"
+                    className="border border-black bg-black px-4 py-2 font-sans text-xs font-semibold uppercase tracking-wider text-white hover:bg-white hover:text-black hover:border-black transition-colors duration-150 cursor-pointer"
                   >
                     Close Details
                   </button>
