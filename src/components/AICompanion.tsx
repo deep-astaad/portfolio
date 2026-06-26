@@ -31,6 +31,118 @@ const QUICK_ACTIONS = [
 const getDemoResponse = (userInput: string): string => {
   const query = userInput.toLowerCase();
 
+  // 1. Solved questions count / resume
+  if (
+    query.includes("solve") || 
+    query.includes("how many questions") || 
+    query.includes("competitive programming") ||
+    query.includes("resume") || 
+    query.includes("cv")
+  ) {
+    return `### 🏆 Problem Solving & Resume Overview
+
+**Competitive Programming & Problem Solving:**
+Aman Deep Singh is a highly proficient algorithmic problem solver. He has successfully solved **1,000+ competitive programming challenges** across platforms like **Codeforces**, **LeetCode**, and **HackerRank** using **C++** and **Python**.
+
+**Aman's Professional Resume:**
+You can interact with and view Aman's fully detailed professional CV directly on this website:
+* 📄 Click the **"View CV"** button in the top Hero header section to open the interactive, readable resume.
+* 💾 Click the **"Download CV"** button in the Hero section to download a high-quality PDF copy of his resume ([Aman_Deep_Singh_Resume.pdf](resume.pdf)).
+
+---
+*Would you like to ask about his technical stack or professional cloud certifications?*`;
+  }
+
+  // 2. Aman's weakness
+  if (query.includes("weakness") || query.includes("weaknesses") || query.includes("flaw")) {
+    return `### Aman's Areas for Growth & Weakness
+
+Every great engineer has areas they continually work to refine. For Aman:
+
+* **The "Optimization Obsession"**: Aman is incredibly detail-oriented. He has a deep passion for architectural clean code and high performance. Occasionally, this means he has to actively hold himself back from spending too much time over-tuning a database query or an asynchronous queue configuration when a simpler, quicker solution is more appropriate for a given milestone. 
+* **How he manages this**: He actively adopts strict MVP (Minimum Viable Product) frameworks, aligns continuously with product managers to verify business timelines, and ensures he prioritizes functional deliverables first before pursuing deeper optimizations.
+
+---
+*Would you like to hear about the top roles Aman is a great fit for?*`;
+  }
+
+  // 3. Top 3 roles
+  if (query.includes("role") && (query.includes("fit") || query.includes("top 3") || query.includes("best") || query.includes("good fit") || query.includes("goodfit"))) {
+    return `### Top 3 Roles Aman Deep Singh is a Perfect Fit For:
+
+Based on his production experience in Tokyo and his cloud-certified systems expertise, Aman is a prime fit for the following roles:
+
+1. **Backend Engineer / Core Software Engineer (Python / Go)**:
+   * **Why**: Deep expertise designing and scaling distributed web applications, REST APIs (**FastAPI, Django**), and high-concurrency event-driven platforms (**Celery, Redis, RabbitMQ**).
+2. **Cloud Systems / DevOps Engineer**:
+   * **Why**: He holds active certifications as an **AWS Certified Solutions Architect** and **AWS Certified CloudOps Engineer**, with proven experience managing PostgreSQL, RDS/Aurora, ECS Fargate clusters, and automated CI/CD pipelines (GitHub Actions).
+3. **Site Reliability Engineer (SRE) / Infrastructure Engineer**:
+   * **Why**: At SMS DataTech, he built self-healing log pipelines that slashed **Mean Time to Detection (MTTD) by 70%** and **Mean Time to Resolution (MTTR) by 50%** in 24/7 production systems.
+
+---
+*Would you like to draft a tailored cover letter matching Aman's profile to one of these roles?*`;
+  }
+
+  // 4. Current salary
+  if (query.includes("salary") || query.includes("compensation") || query.includes("pay") || query.includes("expectations")) {
+    return `### Salary & Compensation Details
+
+Aman Deep Singh's current compensation is aligned with standard mid-level software engineering salary packages in Tokyo, Japan for cloud-certified backend and SRE engineers. 
+
+Because compensation can vary based on the specific location (Tokyo vs. remote vs. international relocation), work model, and comprehensive benefits package, Aman is very open to discussing competitive market-rate offers:
+
+* ✉️ **Let's Discuss**: Please drop a message using the **Contact Form** on the portfolio or email Aman directly at **deepamansinghads@gmail.com** to discuss compensation requirements, benefits, and customized offers!`;
+  }
+
+  // 5 & 6. Availability & timeline to join
+  if (
+    query.includes("availability") || 
+    query.includes("available") || 
+    query.includes("how soon") || 
+    query.includes("join") || 
+    query.includes("notice")
+  ) {
+    return `### Availability & Onboarding Timeline
+
+* **Current Status**: Aman is currently working full-time in Tokyo, Japan, but is highly interested in discussing new high-impact software engineering opportunities.
+* **Timeline to Join / Notice Period**: His notice period is typically **1 to 2 months** to ensure a smooth transition and clean hand-off of his current production duties. However, this notice window can potentially be negotiated or optimized depending on mutual agreement and onboarding structures.
+* **Relocation & Visa Status**: Aman already lives and works in Tokyo under a professional work visa, making transitions within Japan very straightforward. For international/remote opportunities, he is happy to discuss visa sponsorships or remote contract models.
+
+---
+*Would you like to contact Aman directly to discuss an interview schedule?*`;
+  }
+
+  // 7. Spoken languages
+  if (
+    query.includes("speak") || 
+    query.includes("spoken") || 
+    query.includes("human language") || 
+    (query.includes("language") && (query.includes("english") || query.includes("japanese") || query.includes("hindi")))
+  ) {
+    return `### Spoken Languages
+
+Aman Deep Singh is a multilingual engineer capable of working in international, diverse engineering teams:
+
+* **English**: Fluent / Bilingual Proficiency (Full professional working capability).
+* **Hindi**: Native / Bilingual Proficiency.
+* **Japanese**: Conversational Proficiency (Aman lives and works in Tokyo, Japan, collaborating daily with Japanese teams and navigating professional systems).
+
+---
+*Would you like to ask about his programming languages or core technical stack instead?*`;
+  }
+
+  // 8. CEO of his company
+  if (query.includes("ceo") || query.includes("president") || query.includes("executive")) {
+    return `### Company Leadership
+
+Aman is currently working at **SMS DataTech Corporation**, an enterprise cloud and software solutions provider based in Tokyo, Japan. 
+
+The President & CEO of SMS DataTech Corporation is **Masanori Matsuhara** (松原 賢之).
+
+---
+*Would you like to learn more about Aman's achievements and engineering projects at SMS DataTech?*`;
+  }
+
   // Detect job description submissions or explicit requests for alignment/matching
   if (
     query.includes("job description") || 
@@ -356,8 +468,8 @@ ${isLiveConnection
       const localResponse = getDemoResponse(textToSend);
       const isFallback = localResponse.includes("Aman's Portfolio Companion");
 
-      // Bypasses the serverless AI if it's a Quick Action or a direct local match (avoiding remote LLM overhead)
-      if (isQuick || !isFallback) {
+      // Bypasses the serverless AI only if it's a Suggested Command / Quick Action (avoiding remote LLM overhead for preloaded answers)
+      if (isQuick) {
         // Resolve instantly/with a small natural delay to simulate active typing
         await new Promise(resolve => setTimeout(resolve, 500));
         botResponseText = localResponse;
